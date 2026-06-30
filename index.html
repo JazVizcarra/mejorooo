@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>CÚSPIDES — La transformación empieza acá</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&family=Oswald:wght@700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --v:#12002A;--v2:#1A0038;--card:#221040;--card2:#2E1A4A;
+  --vio:#6B21FF;--vio2:#8B4FFF;--vpale:#C9AAFF;
+  --y:#D4FF00;--nieve:#EDE8DF;--n2:#8A8079;
+  --red:#FF3366;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+html{scroll-behavior:smooth;}
+body{background:var(--v);color:var(--nieve);font-family:'DM Sans',sans-serif;font-weight:300;overflow-x:hidden;cursor:none;}
+a{text-decoration:none;color:inherit;}
+img{display:block;max-width:100%;}
+::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-thumb{background:var(--vio);}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
+
+/* ══ CURSOR ══ */
+#cdot{position:fixed;width:8px;height:8px;background:var(--y);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);mix-blend-mode:difference;transition:transform .1s;}
+#cring{position:fixed;width:38px;height:38px;border:1.5px solid rgba(107,33,255,.5);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .3s var(--ease),height .3s var(--ease),border-color .3s;}
+body:has(a:hover) #cring,body:has(button:hover) #cring{width:58px;height:58px;border-color:var(--y);}
+@media(pointer:coarse){#cdot,#cring{display:none;}body{cursor:auto;}}
+
+/* ══ NAV ══ */
+nav{position:fixed;top:0;left:0;right:0;z-index:700;display:flex;align-items:center;padding:1.8rem 3.5rem;transition:all .45s;}
+nav.s{background:rgba(18,0,42,.93);backdrop-filter:blur(22px) saturate(1.5);padding:1rem 3.5rem;border-bottom:1px solid rgba(107,33,255,.18);}
+.nlog{font-family:'Oswald',sans-serif;font-weight:900;font-size:1.1rem;letter-spacing:-.01em;display:flex;align-items:center;gap:.45rem;}
+.ntri{width:18px;height:18px;background:var(--vio);clip-path:polygon(50% 0%,100% 100%,0% 100%);flex-shrink:0;}
+.nv{position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+    display:flex;
+    gap:2rem;
+    list-style:none;}
+.nv a{font-family:'Oswald',sans-serif;font-size:0.85rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--nieve);transition:color .2s;}
+.nv a:hover{color:var(--y);}
+.ncta{font-family:'Oswald',sans-serif;font-weight:700;font-size:.6rem;letter-spacing:.07em;text-transform:uppercase;padding:.55rem 1.5rem;background:var(--vio);color:#fff;border:none;cursor:pointer;clip-path:polygon(0 0,calc(100%-7px) 0,100% 7px,100% 100%,7px 100%,0 calc(100%-7px));transition:background .2s,transform .2s;}
+.ncta:hover{background:var(--vio2);transform:translateY(-2px);}
+.mbb{display:none;background:none;border:none;cursor:pointer;flex-direction:column;gap:5px;padding:4px;}
+.mbb span{display:block;width:22px;height:1.5px;background:var(--nieve);transition:transform .3s,opacity .3s;}
+.mbb.o span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
+.mbb.o span:nth-child(2){opacity:0;}
+.mbb.o span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
+.mm{display:none;flex-direction:column;position:fixed;inset:0;z-index:690;background:var(--v2);padding:5.5rem 2rem 2.5rem;gap:1.2rem;overflow-y:auto;}
+.mm.o{display:flex;}
+.mm a{font-family:'Oswald',sans-serif;font-weight:700;font-size:2rem;line-height:1;color:var(--nieve);border-bottom:1px solid rgba(107,33,255,.15);padding-bottom:1.2rem;transition:color .2s;}
+.mm a:hover{color:var(--y);}
+.mm .mmcta{display:inline-block;margin-top:.5rem;padding:.9rem 2rem;background:var(--vio);color:#fff;font-family:'Oswald',sans-serif;font-weight:700;font-size:.9rem;letter-spacing:.05em;text-transform:uppercase;clip-path:polygon(0 0,calc(100%-9px) 0,100% 9px,100% 100%,9px 100%,0 calc(100%-9px));}
+
+/* scroll-to-top */
+#stt{position:fixed;bottom:2rem;right:2rem;z-index:600;width:44px;height:44px;background:var(--vio);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;clip-path:polygon(50% 0%,100% 100%,0% 100%);transition:background .2s,transform .2s,opacity .3s;opacity:0;pointer-events:none;}
+#stt.show{opacity:1;pointer-events:auto;}
+#stt:hover{background:var(--vio2);transform:translateY(-3px);}
+#stt svg{width:14px;height:14px;stroke:var(--y);stroke-width:2.5;fill:none;transform:rotate(180deg);}
+
+/* ══ REVEALS ══ */
+.r{opacity:0;transform:translateY(28px);transition:opacity .85s var(--ease),transform .85s var(--ease);}
+.rl{opacity:0;transform:translateX(-30px);transition:opacity .85s var(--ease),transform .85s var(--ease);}
+.rr{opacity:0;transform:translateX(30px);transition:opacity .85s var(--ease),transform .85s var(--ease);}
+.r.on,.rl.on,.rr.on{opacity:1;transform:none;}
+.d1{transition-delay:.1s!important;}.d2{transition-delay:.22s!important;}.d3{transition-delay:.36s!important;}.d4{transition-delay:.5s!important;}.d5{transition-delay:.65s!important;}
+
+/* ══ BTNS ══ */
+.by{display:inline-block;font-family:'Oswald',sans-serif;font-weight:700;font-size:.63rem;letter-spacing:.07em;text-transform:uppercase;padding:.75rem 1.8rem;background:var(--y);color:var(--v);border:none;cursor:pointer;clip-path:polygon(0 0,calc(100%-8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100%-8px));transition:transform .2s var(--ease),box-shadow .2s;}
+.by:hover{transform:translateY(-3px);box-shadow:0 14px 36px rgba(212,255,0,.22);}
+.bv{display:inline-block;font-family:'Oswald',sans-serif;font-weight:700;font-size:.63rem;letter-spacing:.07em;text-transform:uppercase;padding:.72rem 1.6rem;background:transparent;color:var(--nieve);border:1px solid rgba(107,33,255,.5);cursor:pointer;transition:border-color .2s,color .2s,transform .2s;}
+.bv:hover{border-color:var(--y);color:var(--y);transform:translateY(-2px);}
+
+/* ══ TOAST NOTIFICATION ══ */
+.toast{position:fixed;bottom:2rem;left:2rem;z-index:800;background:var(--card2);border:1px solid rgba(107,33,255,.3);border-left:3px solid var(--vio);padding:1rem 1.4rem;display:flex;align-items:center;gap:1rem;max-width:320px;transform:translateY(120%);opacity:0;transition:transform .5s var(--ease),opacity .4s;pointer-events:none;}
+.toast.show{transform:none;opacity:1;pointer-events:auto;}
+.toast-ico{width:36px;height:36px;border-radius:50%;background:var(--vio);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+.toast-txt strong{display:block;font-family:'Oswald',sans-serif;font-weight:700;font-size:.72rem;color:var(--nieve);margin-bottom:.15rem;}
+.toast-txt span{font-family:'Fira Code',monospace;font-size:.55rem;letter-spacing:.12em;color:var(--n2);}
+.toast-close{margin-left:auto;background:none;border:none;cursor:pointer;color:var(--n2);font-size:1rem;line-height:1;transition:color .2s;}
+.toast-close:hover{color:var(--y);}
+
+/* ══ COOKIE ══ */
+.cookie{position:fixed;bottom:0;left:0;right:0;z-index:801;background:var(--card2);border-top:1px solid rgba(107,33,255,.2);padding:1.2rem 3.5rem;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;transform:translateY(0);transition:transform .5s var(--ease);}
+.cookie.hide{transform:translateY(110%);}
+.cookie-txt{font-family:'Oswald',sans-serif;font-size:.58rem;letter-spacing:.1em;color:var(--nieve);max-width:600px;line-height:1.6;}
+.cookie-txt b{color:var(--nieve);}
+.cookie-btns{display:flex;gap:.8rem;flex-shrink:0;}
+
+/* ══ CHAT ══ */
+.chat-btn{position:fixed;bottom:5rem;right:2rem;z-index:600;width:52px;height:52px;background:var(--vio);border:none;cursor:pointer;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.4rem;box-shadow:0 8px 28px rgba(107,33,255,.4);transition:transform .25s var(--ease),background .2s;}
+.chat-btn:hover{transform:scale(1.1);background:var(--vio2);}
+.chat-dot{position:absolute;top:4px;right:4px;width:10px;height:10px;background:var(--y);border-radius:50%;border:2px solid var(--v);animation:cdot 2s ease-in-out infinite;}
+@keyframes cdot{0%,100%{transform:scale(1);}50%{transform:scale(1.3);}}
+.chat-panel{position:fixed;bottom:9rem;right:2rem;z-index:601;width:320px;background:var(--card2);border:1px solid rgba(107,33,255,.25);display:flex;flex-direction:column;transform:translateY(20px) scale(.95);opacity:0;pointer-events:none;transition:all .35s var(--ease);}
+.chat-panel.open{transform:none;opacity:1;pointer-events:auto;}
+.chat-head{background:var(--vio);padding:1rem 1.2rem;display:flex;align-items:center;justify-content:space-between;}
+.chat-head-txt strong{display:block;font-family:'Oswald',sans-serif;font-weight:700;font-size:.75rem;color:#fff;}
+.chat-head-txt span{font-family:'Fira Code',monospace;font-size:.52rem;letter-spacing:.1em;color:rgba(255,255,255,.7);}
+.chat-x{background:none;border:none;cursor:pointer;color:rgba(255,255,255,.7);font-size:1.1rem;transition:color .2s;}
+.chat-x:hover{color:#fff;}
+.chat-body{padding:1.2rem;display:flex;flex-direction:column;gap:.8rem;min-height:100px;}
+.chat-msg{background:rgba(107,33,255,.12);border-radius:0 8px 8px 8px;padding:.75rem 1rem;font-size:.82rem;color:var(--nieve);line-height:1.55;font-style:italic;}
+.chat-opts{padding:0 1.2rem 1.2rem;display:flex;flex-direction:column;gap:.5rem;}
+.chat-opt{font-family:'Fira Code',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;padding:.65rem 1rem;background:none;border:1px solid rgba(107,33,255,.35);color:var(--vpale);cursor:pointer;text-align:left;transition:border-color .2s,color .2s,background .2s;}
+.chat-opt:hover{border-color:var(--vio);color:#fff;background:rgba(107,33,255,.1);}
+.chat-footer{padding:.8rem 1.2rem;border-top:1px solid rgba(107,33,255,.15);display:flex;justify-content:center;}
+.chat-footer a{font-family:'Fira Code',monospace;font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;color:var(--y);transition:opacity .2s;}
+.chat-footer a:hover{opacity:.75;}
+
+/* ══ S1 HERO ══ */
+#hero{position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;}
+.hbg{position:absolute;inset:0;background:url('/ASSETS/hero.png') center/cover no-repeat;filter:brightness(0.74) saturate(1.36);}
+.hbg::after{content:'';position:absolute;inset:0;background:linear-gradient(150deg,rgba(107,33,255,.3) 0%,transparent 50%),linear-gradient(to top,var(--v) 0%,rgba(18,0,42,.6) 40%,transparent 75%);}
+.hgrain{position:absolute;inset:0;opacity:.05;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.88' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:160px;}
+.hglow{position:absolute;width:650px;height:650px;border-radius:50%;background:radial-gradient(circle,rgba(107,33,255,.2) 0%,transparent 70%);top:-180px;right:-120px;pointer-events:none;animation:gp 8s ease-in-out infinite;}
+@keyframes gp{0%,100%{transform:scale(1);opacity:.8;}50%{transform:scale(1.18);opacity:1;}}
+/* mountain silhouette */
+.hmtn{position:absolute;bottom:0;left:0;right:0;z-index:1;pointer-events:none;}
+/* altimeter */
+.alti{position:absolute;right:3rem;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;gap:.5rem;z-index:3;}
+.albl{font-family:'Fira Code',monospace;font-size:.48rem;letter-spacing:.2em;color:var(--n2);text-transform:uppercase;writing-mode:vertical-rl;transform:rotate(180deg);}
+.abar{width:2px;height:180px;background:rgba(107,33,255,.14);position:relative;}
+.afill{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,var(--y),var(--vio));height:0%;transition:height 2.5s var(--ease);}
+.anub{position:absolute;right:-7px;width:9px;height:9px;background:var(--y);border-radius:50%;box-shadow:0 0 10px var(--y);bottom:0%;transition:bottom 2.5s var(--ease);transform:translateY(50%);}
+.aval{font-family:'Oswald',sans-serif;font-weight:700;font-size:.9rem;color:var(--y);}
+.aunit{font-family:'Fira Code',monospace;font-size:.46rem;color:var(--n2);letter-spacing:.14em;}
+@media(max-width:768px){.alti{display:none;}}
+/* hero content */
+.hcont{position:relative;z-index:2;padding:5rem 3.5rem 5rem;transform:translateY(-60px);}
+.htag{font-family:'Fira Code',monospace;font-size:.58rem;letter-spacing:.28em;color:var(--y);text-transform:uppercase;margin-bottom:1.8rem;display:flex;align-items:center;gap:.8rem;}
+.htag-l{width:28px;height:1px;background:var(--y);}
+.hh1{font-family:'Oswald',sans-serif;font-weight:900;font-size:clamp(1.6rem,6vw,8rem);line-height:1.19;letter-spacing:-.04em;color:var(--nieve);margin-bottom:2.5rem;user-select:none;transform:translateX(1px);}
+.hh1 .st{color:transparent;-webkit-text-stroke:1.5px var(--vio);}
+.hh1 .yw{color:var(--y);}
+.hh1 .ind{display:block;padding-left:0;}
+.hbot{display:flex;align-items:flex-end;justify-content:space-between;gap:2rem;flex-wrap:wrap;}
+.hdesc{max-width:850px;color:var(--nieve);font-size:.92rem;line-height:1.85;}
+.hdesc b{color:var(--y);font-weight:500;}
+.hbtns{display:flex;gap:1rem;margin-top:1.5rem;flex-wrap:wrap;}
+/* countdown */
+.hcount{display:flex;align-items:center;gap:.6rem;margin-top:1.2rem;font-family:'Fira Code',monospace;font-size:.55rem;letter-spacing:.18em;text-transform:uppercase;color:var(--n2);}
+.hcount .cdot{width:6px;height:6px;border-radius:50%;background:var(--red);animation:cdot 1.5s ease-in-out infinite;}
+.cd-badge{background:rgba(212,255,0,.1);border:1px solid rgba(212,255,0,.25);padding:.2rem .7rem;color:var(--y);display:flex;align-items:center;gap:.3rem;}
+.cd-badge #ctimer{font-weight:700;letter-spacing:.1em;}
+/* scroll */
+.hscr{font-family:'Fira Code',monospace;font-size:.52rem;letter-spacing:.2em;color:var(--n2);writing-mode:vertical-rl;display:flex;align-items:center;gap:.5rem;}
+.hsl{width:1px;height:50px;background:linear-gradient(transparent,var(--vio));animation:sl 2s ease-in-out infinite;}
+@keyframes sl{0%,100%{opacity:.3;transform:scaleY(.5);}50%{opacity:1;transform:scaleY(1);}}
+
+/* ══ TICKER ══ */
+#ticker{background:var(--vio);padding:.75rem 0;overflow:hidden;border-top:1px solid rgba(212,255,0,.2);border-bottom:1px solid rgba(212,255,0,.2);}
+.ttrk{display:flex;white-space:nowrap;animation:tk 26s linear infinite;}
+.titm{font-family:'Oswald',sans-serif;font-weight:700;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:#fff;padding:0 2.5rem;display:inline-flex;align-items:center;gap:2.5rem;}
+.titm::after{content:'▲';color:var(--y);font-size:.5rem;}
+@keyframes tk{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+/* ══ S3 MANIFIESTO ══ */
+#manifiesto{background:var(--v2);padding:8rem 3.5rem;display:grid;grid-template-columns:1.1fr 1fr;gap:5rem;align-items:center;border-bottom:1px solid rgba(107,33,255,.12);}
+.mov{font-family:'Fira Code',monospace;font-size:.55rem;letter-spacing:.28em;text-transform:uppercase;color:var(--vpale);margin-bottom:2rem;}
+.mh{font-family:'Oswald',sans-serif;font-weight:900;font-size:clamp(1.8rem,3.2vw,3.2rem);line-height:1.05;color:var(--nieve);margin-bottom:1.8rem;}
+.mh .em{color:var(--y);}
+.mh .gh{color:transparent;-webkit-text-stroke:1px rgba(237,232,223,.28);}
+.mbod{color:var(--n2);font-size:.9rem;line-height:1.9;margin-bottom:2rem;max-width:510px;}
+.mbod b{color:var(--nieve);font-weight:500;}
+.mbtns{display:flex;gap:1rem;flex-wrap:wrap;}
+.mimg{position:relative;}
+.mimg img{width:100%;aspect-ratio:3/4;object-fit:cover;filter:saturate(.6) brightness(1.11);}
+.mimg-tx{position:absolute;inset:0;background:linear-gradient(135deg,rgba(107,33,255,.18) 0%,transparent 60%,rgba(212,255,0,.04) 100%);mix-blend-mode:multiply;}
+.mimg-fr{position:absolute;inset:0;border:1px solid rgba(107,33,255,.45);transform:translate(12px,12px);}
+.mimg-bd{position:absolute;bottom:1.5rem;left:1.5rem;background:rgba(18,0,42,.9);backdrop-filter:blur(12px);border:1px solid rgba(107,33,255,.35);padding:.8rem 1.2rem;}
+.mimg-bd strong{font-family:'Oswald',sans-serif;font-weight:900;font-size:1.25rem;color:var(--y);display:block;line-height:1;}
+.mimg-bd span{font-family:'Fira Code',monospace;font-size:.5rem;letter-spacing:.14em;color:var(--y);text-transform:uppercase;}
+
+/* ══ RECORRIDO (4 pasos) ══ */
+#recorrido{background:#5301ff;padding:8rem 3.5rem;}
+.rc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin-top:3.5rem;}
+.rc{border-top:2px solid #D4FF00;padding:2rem 1.8rem;transition:border-top-color .3s,background .3s;position:relative;}
+.rc:hover{border-top-color:var(--vio);background:rgba(107,33,255,.05);}
+.rc-num{font-family:'Oswald',sans-serif;font-weight:900;font-size:3.5rem;line-height:1;color:#D4FF00;margin-bottom:1rem;transition:color .3s;}
+.rc:hover .rc-num{color:var(--vio);}
+.rc-tag{font-family:'Fira Code',monospace;font-size:.52rem;letter-spacing:.2em;text-transform:uppercase;color:var(--y);margin-bottom:.5rem;}
+.rc-h{font-family:'Oswald',sans-serif;font-weight:700;font-size:1.05rem;color:var(--y);margin-bottom:.7rem;line-height:1.05;}
+.rc-body{color:var(#ff);font-size:.8rem;line-height:1.7;margin-bottom:1rem;}
+.rc-chips{display:flex;flex-wrap:wrap;gap:.3rem;}
+.rc-chip{font-family:'Fira Code',monospace;font-size:.48rem;letter-spacing:.1em;text-transform:uppercase;padding:.18rem .5rem;background:#D4FF00;color:var(--vio);}
+
+/* ══ HOTSPOT SECTION ══ */
+#hotspots{background:var(--v2);padding:8rem 3.5rem;}
+.hs-wrap{position:relative;margin-top:3.5rem;max-width:100%;}
+.hs-img{width:100%;aspect-ratio:16/8;object-fit:cover;filter:brightness(1) saturate(1);display:block;}
+.hs-overlay{position:absolute;inset:0;background:linear-gradient(to right,rgba(18,0,42,.6) 0%,transparent 50%,rgba(107,33,255,.1) 100%);}
+.hs-point{position:absolute;z-index:3;}
+.hs-btn{width:32px;height:32px;border-radius:50%;background:rgba(107,33,255,.8);border:2px solid var(--y);color:var(--y);font-size:.8rem;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;transition:transform .2s,background .2s;animation:pulse 2.5s ease-in-out infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(212,255,0,.4);}50%{box-shadow:0 0 0 8px rgba(212,255,0,.0);}}
+.hs-btn:hover{transform:scale(1.18);background:var(--vio);}
+.hs-tip{position:absolute;background:rgba(18,0,42,.95);backdrop-filter:blur(16px);border:1px solid rgba(107,33,255,.35);padding:1rem 1.3rem;width:200px;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s var(--ease);transform:translateY(8px);}
+.hs-tip.show{opacity:1;pointer-events:auto;transform:none;}
+.hs-tip strong{font-family:'Oswald',sans-serif;font-weight:700;font-size:.72rem;color:var(--y);display:block;margin-bottom:.3rem;}
+.hs-tip p{font-size:.75rem;color:var(--n2);line-height:1.55;}
+.hs-tip-close{position:absolute;top:.4rem;right:.6rem;background:none;border:none;cursor:pointer;color:var(--n2);font-size:.9rem;}
+
+/* ══ CURSOS (tabs numeradas) ══ */
+#cursos{background:#5301ff;padding:8rem 3.5rem;}
+.ctabs{display:flex;gap:0;margin-top:3rem;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid rgba(107,33,255,.2);}
+.ctabs::-webkit-scrollbar{display:none;}
+.ctab{font-family:'Fira Code',monospace;font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;padding:1rem 1.8rem;background:none;border:none;color:var(--nieve);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .2s,border-color .2s;}
+.ctab:hover{color:var(--nieve);}
+.ctab.a{color:var(--y);border-bottom-color:var(--y);}
+.cpanel{display:none;grid-template-columns:1fr 1fr;gap:0;margin-top:0;animation:fp .4s var(--ease);}
+.cpanel.a{display:grid;}
+@keyframes fp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:none;}}
+.cpanel-img{position:relative;overflow:hidden;min-height:420px;}
+.cpanel-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(1) saturate(.6);transition:transform .6s var(--ease);}
+.cpanel:hover .cpanel-img img{transform:scale(1.04);}
+.cpanel-img-cap{position:absolute;bottom:1.2rem;left:1.5rem;font-family:'Fira Code',monospace;font-size:.5rem;letter-spacing:.18em;color:var(--n2);text-transform:uppercase;z-index:2;}
+.cpanel-img-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(18,0,42,.8) 0%,transparent 60%);}
+.cpanel-body{background:var(--card);padding:3.5rem;}
+.ctag{display:inline-block;font-family:'Fira Code',monospace;font-size:.5rem;letter-spacing:.18em;text-transform:uppercase;padding:.2rem .55rem;margin-bottom:.9rem;}
+.ta{background:rgba(212,255,0,.1);color:var(--y);}
+.tv{background:rgba(107,33,255,.2);color:var(--vpale);}
+.cprice{font-family:'Oswald',sans-serif;font-weight:700;font-size:1.7rem;color:var(--y);margin-bottom:.5rem;}
+.ch{font-family:'Oswald',sans-serif;font-weight:900;font-size:2rem;line-height:.97;color:var(--y);margin-bottom:.5rem;}
+.cmeta{font-family:'Fira Code',monospace;font-size:.58rem;letter-spacing:.1em;color:var(--y);margin-bottom:1.2rem;}
+.cbod{color:var(--nieve);font-size:.85rem;line-height:1.8;margin-bottom:2rem;}
+.cinc{list-style:none;display:flex;flex-direction:column;gap:.5rem;margin-bottom:2rem;}
+.cinc li{font-size:.82rem;color:var(--n2);display:flex;align-items:flex-start;gap:.7rem;}
+.cinc li::before{content:'▲';color:var(--y);font-size:.48rem;margin-top:.25rem;flex-shrink:0;}
+.cbtns{display:flex;gap:.8rem;flex-wrap:wrap;}
+.cspots{display:inline-flex;align-items:center;gap:.4rem;font-family:'Fira Code',monospace;font-size:.5rem;letter-spacing:.12em;text-transform:uppercase;color:var(--red);padding:.22rem .6rem;background:rgba(255,51,102,.1);border:1px solid rgba(255,51,102,.22);margin-bottom:1rem;}
+.cblink{width:6px;height:6px;border-radius:50%;background:var(--red);animation:bl 1.8s ease-in-out infinite;}
+@keyframes bl{0%,100%{opacity:1;}50%{opacity:.15;}}
+
+/* ══ NUM GRANDE ══ */
+#elnum{position:relative;overflow:hidden;min-height:55vh;display:flex;align-items:center;justify-content:center;}
+.enbg{position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1525785967371-87ba44b3e6cf?w=1600&q=80') center/cover no-repeat;filter:brightness(.1) saturate(.3);}
+.enbg::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(107,33,255,.25) 0%,transparent 55%);}
+.en-in{position:relative;z-index:1;text-align:center;padding:5rem 3.5rem;}
+.en-n{font-family:'Oswald',sans-serif;font-weight:900;font-size:clamp(8rem,22vw,22rem);line-height:.85;color:var(--vio);letter-spacing:-.04em;}
+.en-l{font-size:clamp(.9rem,1.5vw,1.2rem);color:var(--n2);margin-top:1rem;}
+.en-s{font-family:'Fira Code',monospace;font-size:.58rem;letter-spacing:.25em;color:var(--vpale);text-transform:uppercase;margin-top:.5rem;}
+
+/* CTA BAND */
+.ctaband{background:var(--card2);padding:4rem 3.5rem;display:flex;align-items:center;justify-content:space-between;gap:2rem;flex-wrap:wrap;border-top:1px solid rgba(107,33,255,.2);border-bottom:1px solid rgba(107,33,255,.2);}
+.ctb-l h2{font-family:'Oswald',sans-serif;font-weight:900;font-size:clamp(1.4rem,2.8vw,2.4rem);line-height:1.05;color:var(--nieve);margin-bottom:.4rem;}
+.ctb-l h2 em{color:var(--y);font-style:normal;}
+.ctb-l p{color:var(--n2);font-size:.86rem;max-width:380px;}
+.ctb-r{display:flex;gap:1rem;flex-wrap:wrap;}
+
+/* ══ GUÍAS ══ */
+#guias{background:var(--v2);padding:8rem 3.5rem;}
+.gg{display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:300px 280px;gap:3px;margin-top:3.5rem;}
+.gc{position:relative;overflow:hidden;background:var(--card);display:flex;flex-direction:column;justify-content:flex-end;}
+.gc--b{grid-row:span 2;}
+.gcimg{position:absolute;inset:0;object-fit:cover;width:100%;height:100%;filter:brightness(0.93) saturate(.48);transition:transform .5s var(--ease),filter .4s;}
+.gc:hover .gcimg{transform:scale(1.04);filter:brightness(.26) saturate(.4);}
+.gcov{position:absolute;inset:0;background:linear-gradient(to top,rgba(18,0,42,.97) 0%,rgba(18,0,42,.18) 55%,transparent 100%);transition:background .4s;}
+.gc:hover .gcov{background:linear-gradient(to top,rgba(18,0,42,.97) 0%,rgba(107,33,255,.28) 58%,transparent 100%);}
+.gcb{position:relative;z-index:2;padding:1.8rem;}
+.gcrl{font-family:'Fira Code',monospace;font-size:.5rem;letter-spacing:.2em;color:var(--y);text-transform:uppercase;margin-bottom:.35rem;}
+.gcn{font-family:'Oswald',sans-serif;font-weight:700;font-size:1.35rem;line-height:1;color:var(--nieve);margin-bottom:.5rem;}
+.gc--b .gcn{font-size:2rem;}
+.gcbio{color:var(--n2);font-size:.78rem;line-height:1.6;max-height:0;overflow:hidden;opacity:0;transition:max-height .45s var(--ease),opacity .4s;}
+.gc:hover .gcbio{max-height:100px;opacity:1;}
+.gcchips{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.8rem;opacity:0;transition:opacity .3s .12s;}
+.gc:hover .gcchips{opacity:1;}
+.gcchip{font-family:'Fira Code',monospace;font-size:.48rem;letter-spacing:.1em;text-transform:uppercase;padding:.2rem .5rem;background:rgba(212,255,0,.08);color:var(--y);}
+
+/* ══ CITA FOTO ══ */
+#cita{position:relative;overflow:hidden;padding:9rem 3.5rem;}
+.cibg{position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1519904981063-b0cf448d479e?w=1800&q=85') center/cover no-repeat;filter:brightness(0.63) saturate(-0.25);}
+.citex{position:absolute;inset:0;background:linear-gradient(to right,rgba(107,33,255,.18) 0%,transparent 55%);}
+.cigrain{position:absolute;inset:0;opacity:.05;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.88' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:160px;}
+.cicont{position:relative;z-index:2;max-width:1000px;}
+.ciline{width:3px;height:70px;background:var(--vio);margin-bottom:2rem;}
+.ciq{font-family:'Oswald',sans-serif;font-weight:900;font-size:clamp(2.2rem,5vw,6rem);line-height:.93;letter-spacing:-.02em;}
+.ciq .w1{color:transparent;-webkit-text-stroke:1px rgba(237,232,223,.2);}
+.ciq .w2{color:var(--vpale);}
+.ciq .w3{color:var(--y);}
+.ciauth{font-family:'Fira Code',monospace;font-size:.58rem;letter-spacing:.25em;color:var(--);text-transform:uppercase;margin-top:2.5rem;}
+.cibtns{display:flex;gap:1rem;margin-top:2rem;flex-wrap:wrap;}
+
+/* ══ GALERÍA ══ */
+#galeria{background:var(--v);padding:8rem 3.5rem;}
+.galg{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin-top:3.5rem;align-items:start;}
+.gi{position:relative;overflow:hidden;cursor:pointer;}
+.gi:nth-child(2){margin-top:3.5rem;}
+.gi:nth-child(3){margin-top:1.5rem;}
+.giimg{width:100%;object-fit:cover;display:block;filter:brightness(.44) saturate(.55);transition:transform .6s var(--ease),filter .4s;}
+.gi:nth-child(1) .giimg{height:460px;}
+.gi:nth-child(2) .giimg{height:380px;}
+.gi:nth-child(3) .giimg{height:430px;}
+.gi:hover .giimg{transform:scale(1.06);filter:brightness(.3) saturate(.45);}
+.giov{position:absolute;inset:0;background:rgba(18,0,42,.22);transition:background .4s;}
+.gi:hover .giov{background:rgba(107,33,255,.22);}
+.gibod{position:absolute;inset:0;z-index:2;padding:2rem;display:flex;flex-direction:column;justify-content:flex-end;}
+.gilbl{font-family:'Fira Code',monospace;font-size:.52rem;letter-spacing:.22em;color:var(--y);text-transform:uppercase;margin-bottom:.5rem;opacity:0;transform:translateY(8px);transition:opacity .4s .04s,transform .4s .04s var(--ease);}
+.gi:hover .gilbl{opacity:1;transform:none;}
+.gih{font-family:'Oswald',sans-serif;font-weight:900;font-size:1.6rem;line-height:.97;color:var(--nieve);transform:translateY(5px);transition:transform .4s var(--ease);}
+.gi:hover .gih{transform:none;}
+.gitxt{color:var(--n2);font-size:.8rem;line-height:1.6;max-height:0;overflow:hidden;opacity:0;transition:max-height .45s var(--ease),opacity .35s .1s;margin-top:.7rem;}
+.gi:hover .gitxt{max-height:100px;opacity:1;}
+
+/* ══ TESTIMONIOS TICKERS ══ */
+#testimonios{background:var(--v2);padding:8rem 3.5rem;}
+.tst-wrap{margin-top:3.5rem;overflow:hidden;display:flex;flex-direction:column;gap:3px;}
+.tst-row{display:flex;gap:3px;animation:tst 35s linear infinite;}
+.tst-row.rev{animation-direction:reverse;animation-duration:40s;}
+.tcard{flex:0 0 320px;background:var(--card);padding:2rem;position:relative;transition:background .3s;}
+.tcard::before{content:'';position:absolute;top:0;left:0;width:0;height:2px;background:var(--vio);transition:width .5s var(--ease);}
+.tcard:hover{background:rgba(107,33,255,.06);}
+.tcard:hover::before{width:100%;}
+.tstars{font-size:.65rem;color:var(--y);letter-spacing:.1em;margin-bottom:1rem;}
+.tq{font-family:'DM Sans',sans-serif;font-size:.9rem;line-height:1.5;color:var(--nieve);margin-bottom:1.5rem;font-style:italic;}
+.twho{font-family:'Fira Code',monospace;font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;color:var(--vpale);}
+.tctx{font-size:.72rem;color:var(--n2);margin-top:.2rem;}
+@keyframes tst{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+/* ══ PREPARACIÓN TIMELINE ══ */
+#preparacion{background:var(--v);padding:8rem 3.5rem;}
+.pmtn{width:100%;opacity:.14;margin-bottom:2.5rem;display:block;}
+.pwrap{display:grid;grid-template-columns:1fr 1.4fr;gap:5rem;align-items:start;}
+.ptl{position:relative;padding-left:2rem;}
+.pspine{position:absolute;left:0;top:0;bottom:0;width:1px;background:#D4FF00;}
+.psf{position:absolute;left:0;top:0;width:1px;background:linear-gradient(to bottom,var(--y),var(--y));height:0;transition:height 2.5s var(--y);}
+.ps{position:relative;padding:2rem 0;border-bottom:1px solid rgba(107,33,255,.1);opacity:0;transform:translateX(-14px);transition:opacity .55s var(--ease),transform .55s var(--ease);}
+.ps.on{opacity:1;transform:none;}
+.psdot{position:absolute;left:-2.4rem;top:2.3rem;width:10px;height:10px;border-radius:50%;background:var(--v);border:2px solid rgba(107,33,255,.3);transition:all .35s;}
+.ps.on .psdot{border-color:var(--vio);background:var(--vio);box-shadow:0 0 14px #D4FF00;}
+.psm{font-family:'Fira Code',monospace;font-size:.5rem;letter-spacing:.25em;color:var(--y);text-transform:uppercase;margin-bottom:.3rem;}
+.pst{font-family:'Oswald',sans-serif;font-weight:700;font-size:.95rem;color:var(--nieve);margin-bottom:.3rem;}
+.psb{color:var(--n2);font-size:.8rem;line-height:1.65;}
+.pr{display:flex;flex-direction:column;gap:2px;}
+.prc{background:var(--card);padding:2.5rem;display:flex;gap:2rem;align-items:center;transition:background .3s;}
+.prc:hover{background:rgba(107,33,255,.15);}
+.prbig{font-family:'Oswald',sans-serif;font-weight:900;font-size:3.5rem;color:var(--y);line-height:1;min-width:5.5rem;}
+.prtit{font-size:.88rem;font-weight:500;color:var(--nieve);margin-bottom:.2rem;}
+.prsub{color:var(--n2);font-size:.78rem;line-height:1.5;}
+.pcta{margin-top:2rem;display:flex;gap:1rem;flex-wrap:wrap;}
+
+/* ══ FAQ ══ */
+#faq{background:var(--v2);padding:8rem 3.5rem;}
+.faq-wrap{margin-top:3rem;max-width:780px;}
+.faq-item{border-top:1px solid rgba(107,33,255,.18);overflow:hidden;}
+.faq-item:last-child{border-bottom:1px solid rgba(107,33,255,.18);}
+.faq-q{width:100%;display:flex;align-items:center;justify-content:space-between;padding:1.4rem 0;background:none;border:none;color:var(--nieve);font-family:'Unbounded',sans-serif;font-weight:700;font-size:.95rem;cursor:pointer;text-align:left;gap:1rem;transition:color .2s;}
+.faq-q:hover{color:var(--y);}
+.faq-q.op{color:var(--y);}
+.faq-icon{font-size:1.2rem;color:var(--vio);transition:transform .35s,color .2s;flex-shrink:0;}
+.faq-q.op .faq-icon{transform:rotate(45deg);color:var(--y);}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .5s var(--ease);}
+.faq-a.op{max-height:200px;}
+.faq-a-in{padding:0 0 1.5rem;color:var(--n2);font-size:.88rem;line-height:1.8;}
+
+/* ══ CTA FINAL ══ */
+#ctaf{background:#0000;padding:10rem 3.5rem;position:relative;overflow:hidden;}
+.cfbg{position:absolute;font-family:'Oswald',sans-serif;font-weight:900;font-size:38vw;line-height:.85;color:rgba(0,0,0,.04);top:50%;left:50%;transform:translate(-50%,-50%);white-space:nowrap;pointer-events:none;letter-spacing:-.04em;}
+.cfin{position:relative;z-index:1;max-width:900px;margin:0 auto;text-align:center;}
+.cflbl{font-family:'Fira Code',monospace;font-size:.58rem;letter-spacing:.28em;text-transform:uppercase;color:rgba(18,0,42,.5);margin-bottom:2rem;}
+.cfh{font-family:'Oswald',sans-serif;font-weight:900;font-size:clamp(3rem,9vw,10rem);line-height:.88;letter-spacing:-.04em;color:var(--nieve);margin-bottom:1.5rem;}
+.cfh em{color:transparent;-webkit-text-stroke:2px var(--y);font-style:normal;}
+.cfsub{color:#fff;font-size:.95rem;line-height:1.8;max-width:460px;margin:0 auto 2.5rem;}
+.cfsp{display:inline-flex;align-items:center;gap:.5rem;font-family:'Fira Code',monospace;font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;color:#D4FF00;margin-bottom:2.5rem;padding:.35rem .9rem;background:rgba(18,0,42,.06);}
+.cfbl{width:7px;height:7px;border-radius:50%;background:var(--red);animation:bl 1.8s ease-in-out infinite;}
+.cfbtns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+.bdark{display:inline-block;font-family:'Oswald',sans-serif;font-weight:700;font-size:.7rem;letter-spacing:.07em;text-transform:uppercase;padding:.85rem 2rem;background:var(--vio);color:var(--y);border:none;cursor:pointer;clip-path:polygon(0 0,calc(100%-9px) 0,100% 9px,100% 100%,9px 100%,0 calc(100%-9px));transition:transform .2s var(--ease),box-shadow .2s;}
+.bdark:hover{transform:translateY(-3px);box-shadow:0 16px 36px rgba(18,0,42,.25);}
+.bodark{display:inline-block;font-family:'Oswald',sans-serif;font-weight:700;font-size:.7rem;letter-spacing:.07em;text-transform:uppercase;padding:.82rem 1.8rem;background:transparent;color:var(--v);border:1.5px solid rgba(18,0,42,.3);cursor:pointer;transition:border-color .2s,transform .2s;}
+.bodark:hover{border-color:var(--v);transform:translateY(-2px);}
+.cfdisc{font-family:'Fira Code',monospace;font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(18,0,42,.38);margin-top:2.5rem;}
+/* email capture */
+.cfemail{margin-top:2.5rem;display:flex;gap:0;max-width:420px;margin-left:auto;margin-right:auto;}
+.cfemail input{flex:1;background:(--vio);border:1.5px solid rgba(18,0,42,.2);border-right:none;padding:.75rem 1.2rem;font-family:'Fira Code',monospace;font-size:.6rem;letter-spacing:.1em;color:var(--vio);outline:none;}
+.cfemail input::placeholder{color:rgba(18,0,42,.4);}
+.cfemail button{font-family:'Oswald',sans-serif;font-weight:700;font-size:.6rem;letter-spacing:.06em;text-transform:uppercase;padding:.75rem 1.2rem;background:var(--vio);color:var(--y);border:none;cursor:pointer;white-space:nowrap;transition:background .2s;}
+.cfemail button:hover{background:rgba(18,0,42,.85);}
+
+/* ══ FOOTER ══ */
+footer{background:var(--v2);border-top:1px solid rgba(107,33,255,.15);padding:4rem 3.5rem;}
+.foot-top{display:grid;grid-template-columns:2fr 1fr 1fr 1.5fr;gap:3rem;margin-bottom:3rem;padding-bottom:3rem;border-bottom:1px solid rgba(107,33,255,.12);}
+.flogo{font-family:'Oswald',sans-serif;font-weight:900;font-size:1.1rem;display:flex;align-items:center;gap:.4rem;margin-bottom:1rem;}
+.ftri{width:16px;height:16px;background:var(--vio);clip-path:polygon(50% 0%,100% 100%,0% 100%);}
+.fdesc{color:var(--n2);font-size:.8rem;line-height:1.7;max-width:280px;}
+.fh{font-family:'Oswald',sans-serif;font-weight:700;font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--nieve);margin-bottom:1rem;}
+.flinks{list-style:none;display:flex;flex-direction:column;gap:.5rem;}
+.flinks a{font-family:'Fira Code',monospace;font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--n2);transition:color .2s;}
+.flinks a:hover{color:var(--y);}
+.femail input{width:100%;background:rgba(107,33,255,.08);border:1px solid rgba(107,33,255,.22);padding:.65rem 1rem;font-family:'Fira Code',monospace;font-size:.58rem;letter-spacing:.1em;color:var(--nieve);outline:none;margin-bottom:.5rem;}
+.femail input::placeholder{color:var(--n2);}
+.femail button{font-family:'Oswald',sans-serif;font-weight:700;font-size:.6rem;letter-spacing:.06em;text-transform:uppercase;padding:.65rem 1.2rem;background:var(--vio);color:#fff;border:none;cursor:pointer;transition:background .2s;}
+.femail button:hover{background:var(--vio2);}
+.foot-bot{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+.fcp{font-family:'Fira Code',monospace;font-size:.52rem;letter-spacing:.1em;color:var(--n2);}
+.fleg{display:flex;gap:1.5rem;}
+.fleg button{font-family:'Fira Code',monospace;font-size:.52rem;letter-spacing:.1em;text-transform:uppercase;color:var(--n2);background:none;border:none;cursor:pointer;transition:color .2s;}
+.fleg button:hover{color:var(--vpale);}
+
+/* ══ MODALS ══ */
+.modal-bg{position:fixed;inset:0;z-index:900;background:rgba(18,0,42,.85);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .35s;}
+.modal-bg.open{opacity:1;pointer-events:auto;}
+.modal{background:var(--card2);border:1px solid rgba(107,33,255,.28);max-width:440px;width:90%;padding:2.5rem;position:relative;transform:scale(.96);transition:transform .35s var(--ease);}
+.modal-bg.open .modal{transform:scale(1);}
+.modal-x{position:absolute;top:1rem;right:1rem;background:none;border:none;cursor:pointer;color:var(--n2);font-size:1.2rem;transition:color .2s;}
+.modal-x:hover{color:var(--y);}
+.modal h3{font-family:'Oswald',sans-serif;font-weight:700;font-size:1rem;color:var(--nieve);margin-bottom:1rem;}
+.modal p{font-size:.82rem;color:var(--n2);line-height:1.75;}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:1100px){
+  .foot-top{grid-template-columns:1fr 1fr;}
+  .gg{grid-template-columns:1fr 1fr;grid-template-rows:auto;}
+  .gc--b{grid-row:auto;}
+  .pwrap{grid-template-columns:1fr;}
+  .rc-grid{grid-template-columns:1fr 1fr;}
+  .cpanel.a{grid-template-columns:1fr;}
+  .cpanel-img{min-height:280px;}
+}
+@media(max-width:768px){
+  nav{padding:1.2rem 1.5rem;}nav.s{padding:.8rem 1.5rem;}
+  .nv,.ncta{display:none;}.mbb{display:flex;}
+  section,#manifiesto,#cursos,#guias,#galeria,#testimonios,#preparacion,#faq,#recorrido,#hotspots,#cita{padding-left:1.5rem;padding-right:1.5rem;}
+  #manifiesto{grid-template-columns:1fr;gap:3rem;padding-top:5rem;padding-bottom:5rem;}
+  .mimg{display:none;}
+  #cursos,#guias,#galeria,#testimonios,#preparacion,#faq,#recorrido,#hotspots,#cita{padding-top:5rem;padding-bottom:5rem;}
+  .galg{grid-template-columns:1fr;}
+  .gi:nth-child(2),.gi:nth-child(3){margin-top:0;}
+  .gi:nth-child(1) .giimg,.gi:nth-child(2) .giimg,.gi:nth-child(3) .giimg{height:300px;}
+  .gg{grid-template-columns:1fr;}
+  .rc-grid{grid-template-columns:1fr;}
+  .ctaband{flex-direction:column;}
+  #ctaf{padding:6rem 1.5rem;}
+  footer{padding:3rem 1.5rem;}
+  .foot-top{grid-template-columns:1fr;}
+  .hcont{padding:0 1.5rem 4rem;}
+  .st-txt{font-size:clamp(1.6rem,6vw,3.5rem);}
+  .chat-panel{right:1rem;width:calc(100vw - 2rem);bottom:7.5rem;}
+  .cookie{padding:1.2rem 1.5rem;}
+}
+@media(max-width:480px){
+  .gg{grid-template-columns:1fr;}
+  .hbot{flex-direction:column;align-items:flex-start;}
+  .hscr{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div id="cdot"></div><div id="cring"></div>
+
+<!-- SCROLL TO TOP -->
+<button id="stt" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+</button>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nlog"><span class="ntri"></span>CÚSPIDES</div>
+  <ul class="nv">
+    <li><a href="#recorrido">Recorrido</a></li>
+    <li><a href="#cursos">Cursos</a></li>
+    <li><a href="#guias">Guías</a></li>
+    <li><a href="#testimonios">Historias</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+  <button class="mbb" id="mbb"><span></span><span></span><span></span></button>
+</nav>
+<nav class="mm" id="mm">
+  <a href="#recorrido" onclick="cm()">Recorrido</a>
+  <a href="#cursos" onclick="cm()">Cursos</a>
+  <a href="#guias" onclick="cm()">Guías</a>
+  <a href="#testimonios" onclick="cm()">Historias</a>
+  <a href="#faq" onclick="cm()">FAQ</a>
+  <a href="#ctaf" class="mmcta" onclick="cm()">Postulate</a>
+</nav>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="toast-ico">🏔️</div>
+  <div class="toast-txt">
+    <strong id="toast-msg">Andrés de Buenos Aires</strong>
+    <span id="toast-sub">se acaba de postular al Lanín</span>
+  </div>
+  <button class="toast-close" onclick="closeToast()">×</button>
+</div>
+
+<!-- COOKIE -->
+<div class="cookie" id="cookie">
+  <p class="cookie-txt"><b>Experiencia Cúspides:</b> Usamos cookies para optimizar tu navegación y recordar tus preferencias.</p>
+  <div class="cookie-btns">
+    <button class="by" style="font-size:.58rem;padding:.5rem 1.2rem;" onclick="hideCookie()">Aceptar</button>
+    <button class="bv" style="font-size:.58rem;padding:.5rem 1rem;" onclick="hideCookie()">Solo necesarias</button>
+  </div>
+</div>
+
+<!-- CHAT -->
+<button class="chat-btn" id="chat-btn" onclick="toggleChat()">
+  💬
+  <div class="chat-dot"></div>
+</button>
+<div class="chat-panel" id="chat-panel">
+  <div class="chat-head">
+    <div class="chat-head-txt"><strong>Asistente Cúspides</strong><span>Online · responde en minutos</span></div>
+    <button class="chat-x" onclick="toggleChat()">×</button>
+  </div>
+  <div class="chat-body">
+    <div class="chat-msg">Hola, soy el asistente de Cúspides. ¿Querés que te ayudemos a elegir tu primer programa?</div>
+  </div>
+  <div class="chat-opts">
+    <button class="chat-opt" onclick="chatOpt('Quiero empezar desde cero')">Quiero empezar desde cero</button>
+    <button class="chat-opt" onclick="chatOpt('Quiero saber qué montaña es para mí')">¿Qué montaña es para mí?</button>
+    <button class="chat-opt" onclick="chatOpt('Quiero información de precios')">Quiero información de precios</button>
+  </div>
+  <div class="chat-footer"><a href="#ctaf" onclick="toggleChat()">Solicitar contacto directo →</a></div>
+</div>
+
+<!-- MODALS -->
+<div class="modal-bg" id="mod-priv"><div class="modal"><button class="modal-x" onclick="closeMod('mod-priv')">×</button><h3>Privacidad</h3><p>Cúspides utiliza los datos ingresados únicamente para responder consultas, coordinar programas y mejorar la experiencia del usuario. No compartimos información personal con terceros ni la usamos con fines publicitarios.</p></div></div>
+<div class="modal-bg" id="mod-terms"><div class="modal"><button class="modal-x" onclick="closeMod('mod-terms')">×</button><h3>Términos y condiciones</h3><p>Las postulaciones están sujetas a evaluación. Los programas, valores y fechas pueden modificarse según la operación de la escuela. La aceptación en un programa implica comprometerse con el proceso de preparación integral.</p></div></div>
+
+<!-- ══ S1 HERO ══ -->
+<section id="hero">
+  <div class="hbg"></div><div class="hgrain"></div><div class="hglow"></div>
+  <div class="hmtn">
+    <svg viewBox="0 0 1440 240" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+      <path d="M0,240 L0,190 L160,175 L320,182 L500,150 L660,118 L720,42 L780,118 L940,145 L1120,165 L1300,155 L1440,168 L1440,240 Z" fill="rgba(50,20,90,.45)"/>
+      <path d="M0,240 L0,215 L220,204 L450,192 L620,172 L700,150 L720,42 L740,150 L820,168 L1040,188 L1260,200 L1440,194 L1440,240 Z" fill="rgba(18,0,42,.98)"/>
+      <path d="M700,66 L720,42 L740,66 L729,74 L720,56 L711,74 Z" fill="rgba(212,255,0,.45)"/>
+    </svg>
+  </div>
+  <div class="alti" id="alti">
+    <span class="albl">altitud</span>
+    <div class="abar"><div class="afill" id="af"></div><div class="anub" id="an"></div></div>
+    <div class="aval" id="av">0</div>
+    <div class="aunit">msnm</div>
+  </div>
+  <div class="hcont">
+    <h1 class="hh1">LA MONTAÑA NO CAMBIA.<span class="ind"><span class="yw">VOS SÍ.</span></span></h1>
+    <div class="hbot r d2">
+      <div>
+        <p class="hdesc">No vendemos turismo de aventura. <b>Transformamos personas</b>— cuerpo y mente — para que lleguen a donde pocos llegan, y vuelvan siendo alguien diferente.</p>
+        <div class="hcount">
+          <div class="cdot"></div>
+          <span>Oferta de lanzamiento · quedan</span>
+          <div class="cd-badge"><span id="ctimer">cargando</span></div>
+        </div>
+        <div class="hbtns">
+          <a href="#cursos" class="by">Ver cursos</a>
+        </div>
+      </div>
+      <div class="hscr"><div class="hsl"></div>scroll</div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div id="ticker"><div class="ttrk">
+  <span class="titm">Volcán Lanín 3.776 msnm</span>
+  <span class="titm">Fitz Roy 3.405 msnm</span>
+  <span class="titm">Aconcagua 6.962 msnm</span>
+  <span class="titm">94% llega a la cima</span>
+  <span class="titm">La montaña no tiene WiFi. Tampoco excusas.</span>
+  <span class="titm">0 incidentes graves · 8 temporadas</span>
+  <span class="titm">Volcán Lanín 3.776 msnm</span>
+  <span class="titm">Fitz Roy 3.405 msnm</span>
+  <span class="titm">Aconcagua 6.962 msnm</span>
+  <span class="titm">94% llega a la cima</span>
+  <span class="titm">La montaña no tiene WiFi. Tampoco excusas.</span>
+  <span class="titm">0 incidentes graves · 8 temporadas</span>
+</div></div>
+
+<!-- ══ S3 MANIFIESTO ══ -->
+<section id="manifiesto">
+  <div class="rl">
+    <p class="mov">Por qué existimos</p>
+    <h2 class="mh">Laburaste toda<br/>tu vida construyendo<br/>algo. <span class="em">¿Y vos?</span></h2>
+    <p class="mbod">En Cúspides no te vendemos una escapada de fin de semana. Te proponemos una transformación real: <b>física y mental definitiva</b>. Antes de pisar la nieve, vas a saber más de vos mismo de lo que sabés hoy. Eso no se consegui de un día para el otro.<br/><br/></p>
+    <div class="mbtns">
+      <button class="by" onclick="goTo('#recorrido')">EMPEZAR YA</button>
+    </div>
+  </div>
+  <div class="rr">
+    <div class="mimg">
+      <img src="https://andaresaventura.com.ar/wp-content/uploads/2020/07/record-aconcagua-360-sergo-1.jpg" alt="Alpinista" loading="lazy"/>
+      <div class="mimg-tx"></div><div class="mimg-fr"></div>
+      <div class="mimg-bd"><strong>6.962 m</strong><span>Aconcagua · techo de América</span></div>
+    </div>
+  </div>
+</section>
+
+  <!-- ══ S12 PREPARACIÓN ══ -->
+<section id="preparacion">
+  <div class="r"><p style="font-family:'Fira Code',monospace;font-size:.55rem;letter-spacing:.28em;text-transform:uppercase;color:var(--vpale);margin-bottom:.8rem;">Cómo se empieza</p><h2 style="font-family:'Oswald',sans-serif;font-weight:900;font-size:clamp(2rem,4vw,4rem);line-height:.92;color:var(--nieve);"><span style="color:var(--y);">Meses</span> antes de la cima</h2></div>
+  <svg class="pmtn" viewBox="0 0 1200 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+    <path d="M0,100 L100,76 L280,62 L440,46 L600,28 L680,10 L720,3 L760,10 L840,28 L1000,50 L1160,66 L1200,62 L1200,100 Z" fill="rgba(107,33,255,.1)"/>
+    <path d="M0,100 L100,76 L280,62 L440,46 L600,28 L680,10 L720,3 L760,10 L840,28 L1000,50 L1160,66 L1200,62" fill="none" stroke="rgba(212, 255, 0, 0.41)" stroke-width="1.5"/>
+    <circle cx="720" cy="3" r="4" fill="#D4FF00"/>
+    <text x="720" y="-4" text-anchor="middle" font-family="Fira Code,monospace" font-size="8" fill="#D4FF00" letter-spacing="1">CIMA</text>
+    <circle cx="100" cy="76" r="3" fill="rgba(107,33,255,.6)"/>
+    <circle cx="440" cy="46" r="3" fill="rgba(107,33,255,.6)"/>
+    <circle cx="680" cy="10" r="3" fill="rgba(107,33,255,.6)"/>
+    <circle cx="1000" cy="50" r="3" fill="rgba(107,33,255,.6)"/>
+  </svg>
+  <div class="pwrap">
+    <div class="ptl rl">
+      <div class="pspine"><div class="psf" id="psf"></div></div>
+      <div style="padding-left:2rem;">
+        <div class="ps" id="p1"><div class="psdot"></div><p class="psm">Mes 1</p><h3 class="pst">Diagnóstico y base</h3><p class="psb">Test de VO₂ máx, análisis postural y tu punto de partida real. Sin autoengaños.</p></div>
+        <div class="ps" id="p2"><div class="psdot"></div><p class="psm">Mes 2–3</p><h3 class="pst">Resistencia y fuerza</h3><p class="psb">Carga progresiva, mochila, terreno irregular y frío controlado.</p></div>
+        <div class="ps" id="p3"><div class="psdot"></div><p class="psm">Mes 4–5</p><h3 class="pst">Técnica glaciar</h3><p class="psb">Nieve real. Crampones, autosalvamento, comunicación en cordada.</p></div>
+        <div class="ps" id="p4"><div class="psdot"></div><p class="psm">Mes 6</p><h3 class="pst">Simulacro integral</h3><p class="psb">Dos noches en alta montaña. Si llegás acá, ya sos otra persona.</p></div>
+      </div>
+    </div>
+    <div class="pr rr d1">
+      <div class="prc"><div class="prbig" data-count="180">0</div><div><p class="prtit">Días de preparación</p><p class="prsub">No hay atajos al proceso.</p></div></div>
+      <div class="prc"><div class="prbig" data-count="94" data-suffix="%">0</div><div><p class="prtit">Tasa de cumbre</p><p class="prsub">De quienes completan el proceso integral.</p></div></div>
+      <div class="prc"><div class="prbig" data-count="12">0</div><div><p class="prtit">Sesiones en nieve real</p><p class="prsub">Incluidas en cada programa.</p></div></div>
+      <div class="pcta">
+        <button class="by" onclick="goTo('#ctaf')"> VER PROCESO</button>
+      </div>
+    </div>
+  </div>
+</section>
+  
+<!-- ══ S4 RECORRIDO ══ -->
+<section id="recorrido">
+  <div class="r"><p class="sec-over" style="font-family:'Fira Code',monospace;font-size:.55rem;letter-spacing:.28em;text-transform:uppercase;color:var(--vpale);margin-bottom:.8rem;">Cómo funciona</p><h2 style="font-family:'Oswald',sans-serif;font-weight:900;font-size:clamp(2rem,4vw,4rem);line-height:.92;color:var(--nieve);">TU <span style="color:var(--y);">PROCESO</span> ES LA EXPERIENCIA</h2></div>
+  <div class="rc-grid">
+    <div class="rc r d1">
+      <div class="rc-num">01</div>
+      <h3 class="rc-h">Evaluación inicial</h3>
+      <p class="rc-body">Detectamos tu punto de partida: condición física, historial, hábitos y disposición real al esfuerzo.</p>
+      <div class="rc-chips"><span class="rc-chip">Diagnóstico</span><span class="rc-chip">VO₂ máx</span><span class="rc-chip">Primera consulta</span></div>
+    </div>
+    <div class="rc r d2">
+      <div class="rc-num">02</div>
+      <h3 class="rc-h">Preparación física y mental</h3>
+      <p class="rc-body">Resistencia, fuerza funcional, nutrición y fortaleza psicológica. Todo en paralelo, todo medido.</p>
+      <div class="rc-chips"><span class="rc-chip">Entrenamiento</span><span class="rc-chip">Nutrición</span><span class="rc-chip">Psicología</span></div>
+    </div>
+    <div class="rc r d3">
+      <div class="rc-num">03</div>
+      <h3 class="rc-h">Técnica glaciar</h3>
+      <p class="rc-body">Crampones, piolet, cordada. Doce sesiones mínimas en nieve real con guías UIAGM certificados.</p>
+      <div class="rc-chips"><span class="rc-chip">Crampones</span><span class="rc-chip">Piolet</span><span class="rc-chip">Cordada</span></div>
+    </div>
+    <div class="rc r d4">
+      <div class="rc-num">04</div>
+      <h3 class="rc-h">La expedición</h3>
+      <p class="rc-body">La cumbre no es el punto. Es la consecuencia. Ventanas confirmadas, ratio 1:3, protocolo sin excepciones.</p>
+      <div class="rc-chips"><span class="rc-chip">Expedición</span><span class="rc-chip">Cumbre</span><span class="rc-chip">Seguridad</span></div>
+    </div>
+  </div>
+</section>
+
+  <!-- ══ S6 CURSOS (tabs) ══ -->
+<section id="cursos">
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:1.5rem;margin-bottom:0;">
+    <div class="r"><p style="font-family:'Fira Code',monospace;font-size:.55rem;letter-spacing:.28em;text-transform:uppercase;color:var(--vpale);margin-bottom:.8rem;">Cómo elegir la ruta</p><h2 style="font-family:'Oswald',sans-serif;font-weight:900;font-size:clamp(2rem,4vw,4rem);line-height:.92;color:var(--nieve);">CADA <span style="color:var(--y);">LUGAR</span> TIENE SU NIVEL DE DIFICULTAD </h2></div>
+  </div>
+  <div class="ctabs">
+    <button class="ctab a" onclick="stab(this,'c1')">01 Lanín</button>
+    <button class="ctab" onclick="stab(this,'c2')">02 Aconcagua</button>
+    <button class="ctab" onclick="stab(this,'c3')">03 Fitz Roy</button>
+  </div>
+
+  <!-- panel lanin -->
+  <div class="cpanel a" id="c1">
+    <div class="cpanel-img"><img src="https://i.pinimg.com/736x/66/02/8c/66028c9a5d2d3c16f759b5942c86870c.jpg" alt="Lanín" loading="lazy"/><div class="cpanel-img-ov"></div><p class="cpanel-img-cap">▲ Volcán Lanín · Neuquén</p></div>
+    <div class="cpanel-body">
+      <span class="ctag tv">Nivel inicial</span>
+      <div class="cspots"><div class="cblink"></div>8 cupos disponibles</div>
+      
+      <h3 class="ch">VOLCÁN LANÍN</h3>
+      <p class="cmeta">▲ 3.776 msnm · Neuquén · 4 meses de prep.</p>
+      <p class="cbod">La puerta de entrada al glaciarismo patagónico. No hace falta experiencia previa — hace falta disposición real. Es exigente, posible y profundamente transformador.</p>
+      <ul class="cinc">
+        <li>4 meses de preparación física y mental</li>
+        <li>8 sesiones técnicas en nieve real</li>
+        <li>Guías UIAGM certificados</li>
+        <li>Plan nutricional personalizado</li>
+        <li>Kit técnico básico incluido</li>
+        
+      </ul>
+      <div class="cprice">$2.800 USD</div>
+      <div class="cbtns">
+        <button class="by" onclick="openCourse('lanin')">Ver programa</button>
+      
+      </div>
+    </div>
+  </div>
+
+  <!-- panel aconcagua -->
+  <div class="cpanel" id="c2">
+    <div class="cpanel-img"><img src="https://t3.ftcdn.net/jpg/02/65/36/22/360_F_265362275_01dM5szg6D2aJLBiEYbe7HVkZ4ij5L0v.jpg" alt="Aconcagua" loading="lazy"/><div class="cpanel-img-ov"></div><p class="cpanel-img-cap">▲ Aconcagua · Mendoza</p></div>
+    <div class="cpanel-body">
+      <span class="ctag ta">Nivel Medio</span>
+      <div class="cspots"><div class="cblink"></div>6 cupos disponibles</div>
+      
+      <h3 class="ch">ACONCAGUA</h3>
+      <p class="cmeta">▲ 6.962 msnm · Mendoza · 9 meses de prep.</p>
+      <p class="cbod">El techo de América. Para llegar acá vas a necesitar años de preparación real. No es el punto de partida — es la consecuencia de un proceso largo y honesto.</p>
+      <ul class="cinc">
+        <li>9 meses de preparación integral</li>
+        <li>12+ sesiones técnicas en nieve</li>
+        <li>Ratio exclusivo 1:2 guía-cliente</li>
+        <li>Médico de expedición incluido</li>
+        <li>Aclimatación progresiva planificada</li>
+      </ul>
+      <div class="cprice">$8.000 USD</div>
+      <div class="cbtns">
+        <button class="by" onclick="openCourse('aconcagua')">Ver programa</button>
+        
+      </div>
+    </div>
+  </div>
+
+  <!-- panel fitzroy -->
+  <div class="cpanel" id="c3">
+    <div class="cpanel-img"><img src="https://backiee.com/static/wallpapers/1000x563/184601.jpg" alt="Fitz Roy" loading="lazy"/><div class="cpanel-img-ov"></div><p class="cpanel-img-cap">▲ Fitz Roy · Patagonia</p></div>
+    <div class="cpanel-body">
+      <span class="ctag ta">Programa élite</span>
+      <div class="cspots"><div class="cblink"></div>4 cupos disponibles</div>
+      
+      <h3 class="ch">FITZ ROY</h3>
+      <p class="cmeta">▲ 3.405 msnm · Patagonia · 6 meses de prep.</p>
+      <p class="cbod">El icono patagónico. Técnica glaciar avanzada, meteorología impredecible y exposición total. Solo para quienes completaron el proceso integral de Cúspides.</p>
+      <ul class="cinc">
+        <li>Solo para expedicionistas certificados</li>
+        <li>6 meses de preparación avanzada</li>
+        <li>12 días en Patagonia con guías UIAGM</li>
+        <li>Seguro de rescate de alta montaña</li>
+        <li>Logística de campo completa</li>
+      </ul>
+      <div class="cprice">$10.000 USD</div>
+      <div class="cbtns">
+        <button class="by" onclick="openCourse('fitzroy')">Ver programa</button>
+        
+      </div>
+    </div>
+  </div>
+
+</section>
+
+  
+  
+
+<!-- ══ S8 GUÍAS ══ -->
+<section id="guias">
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:1.5rem;margin-bottom:3.5rem;">
+    <div class="r"><p style="font-family:'Fira Code',monospace;font-size:.55rem;letter-spacing:.28em;text-transform:uppercase;color:var(--vpale);margin-bottom:.8rem;">Quiénes te llevan a la cima</p><h2 style="font-family:'Oswald',sans-serif;font-weight:900;font-size:clamp(2rem,4vw,4rem);line-height:.92;color:var(--nieve);">SIEMPRE VAS A ESTAR <span style="color:var(--y);">ACOMPAÑADO</span></h2></div>
+  </div>
+  <div class="gg">
+    <div class="gc gc--b r d1"><img class="gcimg" src="/ASSETS/leandro-foto_leandro.jefe.png" alt="Martín" loading="lazy"/><div class="gcov"></div><div class="gcb"><p class="gcrl">Director técnico · UIAGM</p><h3 class="gcn">Leandro<br/>Chill</h3><p class="gcbio">18 años de guía. Más de 300 cumbres en Patagonia y Andes centrales. Formador de guías en la Escuela Nacional. Su criterio para dar vuelta nunca falló.</p><div class="gcchips"><span class="gcchip">UIAGM</span><span class="gcchip">Formación</span><span class="gcchip">Patagonia</span></div></div></div>
+    <div class="gc r d2"><img class="gcimg" src="/ASSETS/leandro-foto_chiari.02.png" alt="Chiara" loading="lazy"/><div class="gcov"></div><div class="gcb"><p class="gcrl">Guía senior · Instructora</p><h3 class="gcn">Chiara Castillo</h3><p class="gcbio">Primera mujer en el equipo técnico. Especialista en preparación mental.</p><div class="gcchips"><span class="gcchip">Psicología</span><span class="gcchip">Primeros aux.</span></div></div></div>
+    <div class="gc r d3"><img class="gcimg" src="/ASSETS/leandro-foto_caro.03.png" alt="Carolina" loading="lazy"/><div class="gcov"></div><div class="gcb"><p class="gcrl">Guía · WFR</p><h3 class="gcn">Carolina Ríos</h3><p class="gcbio">Navegación glaciar y frío extremo. Rescate en zonas remotas.</p><div class="gcchips"><span class="gcchip">Glaciarismo</span><span class="gcchip">Rescate</span></div></div></div>
+    <div class="gc r d4"><img class="gcimg" src="/ASSETS/leandro-foto_tincho.04.png" alt="Leandro" loading="lazy"/><div class="gcov"></div><div class="gcb"><p class="gcrl">Guía técnico · AIARE L2</p><h3 class="gcn">Martín Bostero</h3><p class="gcbio">Ex Patrulla de Rescate. Grietas, mixto y cuerda fija.</p><div class="gcchips"><span class="gcchip">Mixto</span><span class="gcchip">Rescate</span></div></div></div>
+    <div class="gc r d5"><img class="gcimg" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&q=75" alt="Leandro" loading="lazy"/><div class="gcov"></div><div class="gcb"><p class="gcrl">Guía técnico · AIARE L2</p><h3 class="gcn">Juanma Belluccia</h3><p class="gcbio">Ex Patrulla de Rescate. Grietas, mixto y cuerda fija.</p><div class="gcchips"><span class="gcchip">Mixto</span><span class="gcchip">Rescate</span></div></div></div>
+  </div>
+</section>
+<!-- ══ S5 HOTSPOTS ══ -->
+<section id="hotspots">
+  <div class="r"><p style="font-family:'Fira Code',monospace;font-size:.55rem;letter-spacing:.28em;text-transform:uppercase;color:var(--vpale);margin-bottom:.8rem;">Cómo equiparse</p><h2 style="font-family:'Oswald',sans-serif;font-weight:900;font-size:clamp(2rem,4vw,4rem);line-height:.92;color:var(--nieve);">TU <span style="color:var(--y);">EQUIPO</span> ES TU SEGUNDA PIEL</h2></div>
+  <div class="hs-wrap r d1">
+    <img class="hs-img" src="/ASSETS/equipo-vestimenta.png" alt="Alta montaña" loading="lazy"/>
+    <div class="hs-overlay"></div>
+    <!-- hotspot 1 -->
+    <div class="hs-point" style="top:35%;left:22%;">
+      <button class="hs-btn" onclick="toggleHs('h1')">+</button>
+      <div class="hs-tip" id="h1" style="top:40px;left:-80px;">
+        <button class="hs-tip-close" onclick="closeHs('h1')">×</button>
+        <strong>Piolet técnico</strong>
+        <p>Herramienta esencial para autodetención y ascenso en pendientes de hielo. Lo practicás 12 veces antes de la expedición.</p>
+      </div>
+    </div>
+    <!-- hotspot 2 -->
+    <div class="hs-point" style="top:55%;left:48%;">
+      <button class="hs-btn" onclick="toggleHs('h2')">+</button>
+      <div class="hs-tip" id="h2" style="top:40px;left:-80px;">
+        <button class="hs-tip-close" onclick="closeHs('h2')">×</button>
+        <strong>Crampones de 12 puntos</strong>
+        <p>Para hielo técnico y mixto. El grip que hace que el cuerpo confíe en el terreno.</p>
+      </div>
+    </div>
+    <!-- hotspot 3 -->
+    <div class="hs-point" style="top:25%;left:68%;">
+      <button class="hs-btn" onclick="toggleHs('h3')">+</button>
+      <div class="hs-tip" id="h3" style="top:40px;left:-150px;">
+        <button class="hs-tip-close" onclick="closeHs('h3')">×</button>
+        <strong>Ropa técnica de capas</strong>
+        <p>Sistema de 3 capas: térmica base, forro polar y cortaviento waterproof. Cada decisión de vestuario puede marcar la diferencia.</p>
+      </div>
+    </div>
+    <!-- hotspot 4 -->
+    <div class="hs-point" style="top:65%;left:78%;">
+      <button class="hs-btn" onclick="toggleHs('h4')">+</button>
+      <div class="hs-tip" id="h4" style="top:40px;left:-160px;">
+        <button class="hs-tip-close" onclick="closeHs('h4')">×</button>
+        <strong>Cuerda de escalada</strong>
+        <p>La cordada no es un grupo. Es un organismo. Confianza mutua construida en meses de trabajo en equipo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<div class="ctaband r">
+  <div class="ctb-l">
+    <h2><span style="color:var(--y);">NO ESPERES MÁS Y ANOTATE YA</span></h2>
+    <p>Hablá con nuestro equipo. Sin compromiso. Te decimos la verdad sobre tu punto de partida real.</p>
+  </div>
+  <div class="ctb-r">
+    <button class="by" onclick="goTo('#ctaf')">Consultá gratis</button>
+  </div>
+</div>
+
+  
+  
+<!-- ══ S9 CITA ══ -->
+<section id="cita">
+  <div class="cibg"></div><div class="citex"></div><div class="cigrain"></div>
+  <div class="cicont">
+    <div class="ciline r"></div>
+    <p class="ciq r d1">La montaña<br/>no te transforma.<br/>Te <span class="w3">revela</span>.</p>
+    <div class="cibtns r d3">
+    </div>
+  </div>
+</section>
+
+<!-- ══ S10 GALERÍA ══ -->
+<section id="galeria">
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:1.5rem;margin-bottom:3.5rem;">
+    <div class="r"><p style="font-family:'Fira Code',monospace;font-size:.55rem;letter-spacing:.28em;text-transform:uppercase;color:var(--vpale);margin-bottom:.8rem;">En terreno</p><h2 style="font-family:'Oswald',sans-serif;font-weight:900;font-size:clamp(2rem,4vw,4rem);line-height:.92;color:var(--nieve);">Lo que <span style="color:var(--vio);">vivís</span></h2></div>
+  </div>
+  <div class="galg">
+    <div class="gi r d1"><img class="giimg" src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=75" alt="Glaciar" loading="lazy"/><div class="giov"></div><div class="gibod"><p class="gilbl">Técnica glaciar</p><h3 class="gih">Nieve real.<br/>Sin red.</h3><p class="gitxt">12 sesiones con guías UIAGM. Crampones, piolet, autosalvamento. La teoría termina acá.</p></div></div>
+    <div class="gi r d2"><img class="giimg" src="https://images.unsplash.com/photo-1525785967371-87ba44b3e6cf?w=800&q=75" alt="Cumbre" loading="lazy"/><div class="giov"></div><div class="gibod"><p class="gilbl">Alta montaña</p><h3 class="gih">6.962 m<br/>de verdad.</h3><p class="gitxt">El Aconcagua no perdona la improvisación. Lo que construiste en meses se prueba cuando el oxígeno escasea.</p></div></div>
+    <div class="gi r d3"><img class="giimg" src="https://images.unsplash.com/photo-1549060279-7e168fcee0c2?w=800&q=75" alt="Entrenamiento" loading="lazy"/><div class="giov"></div><div class="gibod"><p class="gilbl">El proceso</p><h3 class="gih">El límite<br/>sos vos.</h3><p class="gitxt">A 5.000 metros el cuerpo terminó de hablar. Preparamos la mente para lo que viene después.</p></div></div>
+  </div>
+</section>
+
+<!-- ══ S11 TESTIMONIOS (tickers dobles) ══ -->
+<section id="testimonios">
+  <div style="margin-bottom:3.5rem;" class="r"><p style="font-family:'Fira Code',monospace;font-size:.55rem;letter-spacing:.28em;text-transform:uppercase;color:var(--vpale);margin-bottom:.8rem;">Quienes ya subieron</p><h2 style="font-family:'Oswald',sans-serif;font-weight:900;font-size:clamp(2rem,4vw,4rem);line-height:.92;color:var(--nieve);">ENTRENAR CON MÉTODO<br/><span style="color:var(--vio);">CAMBIA TODO.</span></h2></div>
+  <div class="tst-wrap">
+    <!-- row 1 -->
+    <div class="tst-row">
+      <div class="tcard"><div class="tstars">★★★★★</div><p class="tq">"Llegué sin saber usar crampones. Seis meses después estaba en la cumbre del Lanín mirando la estepa."</p><p class="twho">Andrés M.</p><p class="tctx">Ingeniero · Bs. As. · Lanín 2024</p></div>
+      <div class="tcard"><div class="tstars">★★★★★</div><p class="tq">"Me rechazaron en la evaluación inicial. Me dijeron qué mejorar. Eso solo ya valió más que cualquier viaje."</p><p class="twho">Valeria R.</p><p class="tctx">Médica · Rosario · Lanín 2025</p></div>
+      <div class="tcard"><div class="tstars">★★★★★</div><p class="tq">"El protocolo de seguridad es lo más serio que vi. En algún momento confié más en Cúspides que en mí mismo."</p><p class="twho">Diego F.</p><p class="tctx">Empresario · Mendoza · Fitz Roy 2024</p></div>
+      <div class="tcard"><div class="tstars">★★★★★</div><p class="tq">"Fitz Roy me mostró quién soy cuando no tengo salida. Ese criterio no se gana en ningún curso."</p><p class="twho">Pablo G.</p><p class="tctx">Contador · CABA · Fitz Roy 2025</p></div>
+      <div class="tcard"><div class="tstars">★★★★★</div><p class="tq">"Cada sesión tenía objetivo, análisis y corrección. El proceso me cambió antes de llegar a la montaña."</p><p class="twho">Luciana T.</p><p class="tctx">Diseñadora · Bariloche · Lanín 2025</p></div>
+      <div class="tcard"><div class="tstars">★★★★★</div><p class="tq">"Bajé 12 kilos, subí mi VO₂ máx un 18% y llegué a la cima. El proceso funciona de verdad."</p><p class="twho">Sebastián A.</p><p class="tctx">Arquitecto · Córdoba · Aconcagua 2024</p></div>
+      <div class="tcard"><div class="tstars">★★★★★</div><p class="tq">"Llegué sin saber usar crampones. Seis meses después estaba en la cumbre del Lanín mirando la estepa."</p><p class="twho">Andrés M.</p><p class="tctx">Ingeniero · Bs. As. · Lanín 2024</p></div>
+      <div class="tcard"><div class="tstars">★★★★★</div><p class="tq">"Me rechazaron en la evaluación inicial. Me dijeron qué mejorar. Eso solo ya valió más que cualquier viaje."</p><p class="twho">Valeria R.</p><p class="tctx">Médica · Rosario · Lanín 2025</p></div>
+      <div class="tcard"><div class="tstars">★★★★★</div><p class="tq">"El protocolo de seguridad es lo más serio que vi. En algún momento confié más en Cúspides que en mí mismo."</p><p class="twho">Diego F.</p><p class="tctx">Empresario · Mendoza · Fitz Roy 2024</p></div>
+      <div class="tcard"><div class="tstars">★★★★★</div><p class="tq">"Fitz Roy me mostró quién soy cuando no tengo salida. Ese criterio no se gana en ningún curso."</p><p class="twho">Pablo G.</p><p class="tctx">Contador · CABA · Fitz Roy 2025</p></div>
+      <div class="tcard"><div class="tstars">★★★★★</div><p class="tq">"Cada sesión tenía objetivo, análisis y corrección. El proceso me cambió antes de llegar a la montaña."</p><p class="twho">Luciana T.</p><p class="tctx">Diseñadora · Bariloche · Lanín 2025</p></div>
+      <div class="tcard"><div class="tstars">★★★★★</div><p class="tq">"Bajé 12 kilos, subí mi VO₂ máx un 18% y llegué a la cima. El proceso funciona de verdad."</p><p class="twho">Sebastián A.</p><p class="tctx">Arquitecto · Córdoba · Aconcagua 2024</p></div>
+    </div>
+    <!-- row 2 reverse -->
+    <div class="tst-row rev">
+      <div class="tcard"><div class="tstars">★★★★★</div><p class="tq">"Aprendí que la cima no es el objetivo. Es la consecuencia. Eso lo entendí en el proceso, no arriba."</p><p class="twho">Camila V.</p><p class="tctx">Psicóloga · Mendoza · Lanín 2025</p></div>
+      <div class="tcard"><div class="tstars">★★★★★</div><p class="tq">"La evaluación inicial me dijo cosas que ningún médico me había dicho. Eso solo ya valió la pena."</p><p class="twho">Rodrigo P.</p><p class="tctx">Médico · Santa Fe · Aconcagua 2024</p></div>
+      <div class="tcard"><div class="tstars">★★★★★</div><p class="tq">"Me preparé para una montaña y terminé cambiando mi vida entera. No lo esperaba así de literal."</p><p class="twho">Florencia M.</p><p class="tctx">Abogada · CABA · Lanín 2024</p></div>
+      <div class="tcard"><div class="tstars">★★★★★</div><p class="tq">"Lo que más me sorprendió fue el trabajo mental. Nunca imaginé que eso fuera parte del proceso de montaña."</p><p class="twho">Esteban L.</p><p class="tctx">Contador · Córdoba · Fitz Roy 2025</p></div>
+      <div class="tcard"><div class="tstars">★★★★★</div><p class="tq">"El ratio 1:3 no es marketing. Es real. En cada momento sabés que alguien está mirando."</p><p class="twho">Natalia R.</p><p class="tctx">Docente · Bariloche · Lanín 2025</p></div>
+      <div class="tcard"><div class="tstars">★★★★★</div><p class="tq">"No vine a jugar. Vine a entrenar. Y eso fue exactamente lo que pasó."</p><p class="twho">Ignacio B.</p><p class="tctx">Emprendedor · Rosario · Aconcagua 2025</p></div>
+      <div class="tcard"><div class="tstars">★★★★★</div><p class="tq">"Aprendí que la cima no es el objetivo. Es la consecuencia. Eso lo entendí en el proceso, no arriba."</p><p class="twho">Camila V.</p><p class="tctx">Psicóloga · Mendoza · Lanín 2025</p></div>
+      <div class="tcard"><div class="tstars">★★★★★</div><p class="tq">"La evaluación inicial me dijo cosas que ningún médico me había dicho. Eso solo ya valió la pena."</p><p class="twho">Rodrigo P.</p><p class="tctx">Médico · Santa Fe · Aconcagua 2024</p></div>
+      <div class="tcard"><div class="tstars">★★★★★</div><p class="tq">"Me preparé para una montaña y terminé cambiando mi vida entera. No lo esperaba así de literal."</p><p class="twho">Florencia M.</p><p class="tctx">Abogada · CABA · Lanín 2024</p></div>
+      <div class="tcard"><div class="tstars">★★★★★</div><p class="tq">"Lo que más me sorprendió fue el trabajo mental. Nunca imaginé que eso fuera parte del proceso de montaña."</p><p class="twho">Esteban L.</p><p class="tctx">Contador · Córdoba · Fitz Roy 2025</p></div>
+      <div class="tcard"><div class="tstars">★★★★★</div><p class="tq">"El ratio 1:3 no es marketing. Es real. En cada momento sabés que alguien está mirando."</p><p class="twho">Natalia R.</p><p class="tctx">Docente · Bariloche · Lanín 2025</p></div>
+      <div class="tcard"><div class="tstars">★★★★★</div><p class="tq">"No vine a jugar. Vine a entrenar. Y eso fue exactamente lo que pasó."</p><p class="twho">Ignacio B.</p><p class="tctx">Emprendedor · Rosario · Aconcagua 2025</p></div>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- ══ FAQ ══ -->
+<section id="faq">
+  <div class="r"><p style="font-family:'Fira Code',monospace;font-size:.55rem;letter-spacing:.28em;text-transform:uppercase;color:var(--vpale);margin-bottom:.8rem;">Preguntas frecuentes</p><h2 style="font-family:'Oswald',sans-serif;font-weight:900;font-size:clamp(2rem,4vw,4rem);line-height:.92;color:var(--nieve);">ANTES DE <span style="color:var(--vio);">ENFRENTARNOS A LA CIMA</span></h2></div>
+  <div class="faq-wrap r d1">
+    <div class="faq-item"><button class="faq-q" onclick="tFaq(this)"><span>¿Necesito experiencia previa en montaña?</span><span class="faq-icon">+</span></button><div class="faq-a"><p class="faq-a-in">No. El Volcán Lanín está diseñado para personas sin experiencia previa en glaciarismo. Lo único que necesitás es disposición real al esfuerzo y compromiso con el proceso de 4 meses. La evaluación inicial lo determina.</p></div></div>
+    <div class="faq-item"><button class="faq-q" onclick="tFaq(this)"><span>¿Qué pasa si no paso la evaluación inicial?</span><span class="faq-icon">+</span></button><div class="faq-a"><p class="faq-a-in">Te decimos exactamente qué tenés que mejorar y en qué plazo. El rechazo no es definitivo — es información. Muchos de nuestros mejores expedicionistas fueron rechazados en una primera instancia y volvieron a postularse.</p></div></div>
+    <div class="faq-item"><button class="faq-q" onclick="tFaq(this)"><span>¿Cuánto tiempo tengo que entrenar por semana?</span><span class="faq-icon">+</span></button><div class="faq-a"><p class="faq-a-in">Mínimo 5 días por semana. La preparación no es opcional ni flexible. El proceso existe porque es necesario — y porque funciona. El 94% de tasa de cumbre no es casualidad.</p></div></div>
+    <div class="faq-item"><button class="faq-q" onclick="tFaq(this)"><span>¿Los programas tienen plan de pago?</span><span class="faq-icon">+</span></button><div class="faq-a"><p class="faq-a-in">Sí. Ofrecemos planes de pago para los programas principales. Los detalles se coordinan en la entrevista inicial una vez aprobada la evaluación. No queremos que el dinero sea el obstáculo si la disposición es real.</p></div></div>
+    <div class="faq-item"><button class="faq-q" onclick="tFaq(this)"><span>¿Qué sucede si durante el proceso no puedo continuar?</span><span class="faq-icon">+</span></button><div class="faq-a"><p class="faq-a-in">Evaluamos caso a caso. Si la razón es médica, coordinamos la baja temporal. Si es de compromiso, tenemos una conversación honesta. No reemplazamos cupos sin una evaluación de si la persona está realmente lista.</p></div></div>
+    <div class="faq-item"><button class="faq-q" onclick="tFaq(this)"><span>¿Trabajan con telemetría o seguimiento de métricas?</span><span class="faq-icon">+</span></button><div class="faq-a"><p class="faq-a-in">Sí. Medimos VO₂ máx, frecuencia cardíaca en esfuerzo, composición corporal y carga semanal. Cada semana tenés datos reales de tu progreso. No entrenamos a ojo.</p></div></div>
+  </div>
+</section>
+
+<!-- ══ CTA FINAL ══ -->
+<section id="ctaf">
+  <p class="cfbg" aria-hidden="true">▲</p>
+  <div class="cfin r">
+    <p class="cflbl">El primer paso es el más difícil</p>
+    <h2 class="cfh">LA CUMBRE<br/>TE <em>ESPERA</em></h2>
+    <p class="cfsub">No es una inscripción. Es el inicio de una evaluación. Respondemos cada postulación en menos de 48 horas.</p>
+    <div class="cfsp"><div class="cfbl"></div>Cupos limitados · Temporada 2025–2026</div>
+    <div class="cfbtns">
+      <button class="bdark" onclick="window.open('mailto:info@cuspides.com.ar','_blank')">Postulate</button>
+    </div>
+    <div class="cfemail">
+      <input type="email" id="cf-email" placeholder="tu@email.com"/>
+      <button onclick="submitEmail()">CONTACTARME →</button>
+    </div>
+    <p style="font-family:'Fira Code',monospace;font-size:.48rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(18,0,42,.4);margin-top:.5rem;">Respuesta habitual en menos de 24 hs</p>
+    <p class="cfdisc">No vendemos cupos. Evaluamos personas.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-top">
+    <div>
+      <div class="flogo"><span class="ftri"></span>CÚSPIDES</div>
+      <p class="fdesc">Escuela de alta montaña orientada a transformación física y mental. Bariloche, Patagonia Argentina.</p>
+    </div>
+    <div>
+      <p class="fh">Explorar</p>
+      <ul class="flinks">
+        <li><a href="#recorrido">Recorrido</a></li>
+        <li><a href="#cursos">Cursos</a></li>
+        <li><a href="#guias">Guías</a></li>
+        <li><a href="#testimonios">Historias</a></li>
+        <li><a href="#preparacion">Proceso</a></li>
+        <li><a href="#faq">Preguntas frecuentes</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="fh">Contacto</p>
+      <ul class="flinks">
+        <li><a href="mailto:info@cuspides.com.ar">info@cuspides.com.ar</a></li>
+        <li><a href="tel:+5492944000000">+54 9 294 400-0000</a></li>
+        <li><a href="#">Bariloche, Patagonia</a></li>
+        <li><a href="#">Instagram</a></li>
+        <li><a href="#">YouTube</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="fh">¿Listo para empezar?</p>
+      <p style="font-size:.78rem;color:var(--n2);margin-bottom:1rem;line-height:1.6;">Dejá tu email y te ayudamos a elegir el programa según tu punto de partida real.</p>
+      <div class="femail">
+        <input type="email" id="femail" placeholder="tu@email.com"/>
+        <button onclick="submitFooterEmail()">CONTACTARME →</button>
+      </div>
+    </div>
+  </div>
+  <div class="foot-bot">
+    <p class="fcp">© 2025 Cúspides · Bariloche, Patagonia · Todos los derechos reservados.</p>
+    <div class="fleg">
+      <button onclick="openMod('mod-priv')">Privacidad</button>
+      <button onclick="openMod('mod-terms')">Términos y condiciones</button>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* cursor */
+const D=document.getElementById('cdot'),R=document.getElementById('cring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;D.style.left=mx+'px';D.style.top=my+'px';});
+(function aR(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;R.style.left=rx+'px';R.style.top=ry+'px';requestAnimationFrame(aR);})();
+
+/* nav + scroll to top */
+const nav=document.getElementById('nav'),stt=document.getElementById('stt');
+window.addEventListener('scroll',()=>{nav.classList.toggle('s',scrollY>60);stt.classList.toggle('show',scrollY>400);},{passive:true});
+
+/* mobile menu */
+const mbb=document.getElementById('mbb'),mm=document.getElementById('mm');
+mbb.addEventListener('click',()=>{mbb.classList.toggle('o');mm.classList.toggle('o');document.body.style.overflow=mm.classList.contains('o')?'hidden':'';});
+function cm(){mbb.classList.remove('o');mm.classList.remove('o');document.body.style.overflow='';}
+
+/* scroll helper */
+function goTo(sel){document.querySelector(sel)?.scrollIntoView({behavior:'smooth'});}
+
+/* reveals */
+const rv=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('on');rv.unobserve(x.target);}});},{threshold:.1,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.r,.rl,.rr').forEach(el=>rv.observe(el));
+
+/* counters */
+const co=new IntersectionObserver(e=>{
+  e.forEach(x=>{
+    if(!x.isIntersecting)return;
+    const el=x.target,t=+el.dataset.count,s=el.dataset.suffix||'';
+    if(isNaN(t)||!t){co.unobserve(el);return;}
+    let n=0;const st=t/60;
+    (function tk(){n=Math.min(n+st,t);el.textContent=Math.round(n)+s;if(n<t)requestAnimationFrame(tk);})();
+    co.unobserve(el);
+  });
+},{threshold:.4});
+document.querySelectorAll('[data-count]').forEach(el=>co.observe(el));
+
+/* altímetro */
+setTimeout(()=>{
+  const f=document.getElementById('af'),n=document.getElementById('an'),v=document.getElementById('av');
+  if(!f)return;f.style.height='68%';n.style.bottom='68%';
+  let c=0;const ti=setInterval(()=>{c=Math.min(c+3776/80,3776);v.textContent=Math.round(c).toLocaleString('es-AR');if(c>=3776)clearInterval(ti);},25);
+},900);
+window.addEventListener('scroll',()=>{
+  const f=document.getElementById('af'),n=document.getElementById('an'),v=document.getElementById('av');
+  if(!f)return;
+  const p=Math.min(scrollY/document.body.scrollHeight*100,92),a=20+p*.72;
+  f.style.height=a+'%';n.style.bottom=a+'%';v.textContent=Math.round(p/100*6962).toLocaleString('es-AR');
+},{passive:true});
+
+/* countdown */
+function updateTimer(){
+  const end=new Date();end.setDate(end.getDate()+3);end.setHours(end.getHours()+12);
+  const diff=end-new Date();
+  if(diff<=0){document.getElementById('ctimer').textContent='¡Oferta finalizada!';return;}
+  const d=Math.floor(diff/86400000),h=Math.floor((diff%86400000)/3600000),m=Math.floor((diff%3600000)/60000);
+  document.getElementById('ctimer').textContent=`${d}d ${h}h ${m}m`;
+}
+updateTimer();setInterval(updateTimer,30000);
+
+/* toast */
+const toasts=[
+  {msg:'Andrés de Buenos Aires',sub:'se acaba de postular al Lanín'},
+  {msg:'Valeria de Rosario',sub:'completó su evaluación inicial'},
+  {msg:'Diego de Mendoza',sub:'reservó su lugar en Fitz Roy'},
+  {msg:'Luciana de Bariloche',sub:'comenzó el programa de nutrición'},
+  {msg:'Pablo de CABA',sub:'se acaba de postular al Aconcagua'},
+];
+let tIdx=0;
+function showToast(){
+  const t=document.getElementById('toast'),data=toasts[tIdx%toasts.length];
+  document.getElementById('toast-msg').textContent=data.msg;
+  document.getElementById('toast-sub').textContent=data.sub;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),4500);
+  tIdx++;
+}
+function closeToast(){document.getElementById('toast').classList.remove('show');}
+setTimeout(()=>{showToast();setInterval(showToast,9000);},3500);
+
+/* cookie */
+setTimeout(()=>{document.getElementById('cookie').classList.remove('hide');},1500);
+function hideCookie(){document.getElementById('cookie').classList.add('hide');}
+document.getElementById('cookie').classList.add('hide');
+
+/* chat */
+let chatOpen=false;
+function toggleChat(){chatOpen=!chatOpen;document.getElementById('chat-panel').classList.toggle('open',chatOpen);}
+function chatOpt(txt){
+  const body=document.querySelector('.chat-body');
+  const userMsg=document.createElement('div');
+  userMsg.style.cssText='background:rgba(107,33,255,.2);border-radius:8px 0 8px 8px;padding:.65rem 1rem;font-size:.82rem;color:var(--nieve);align-self:flex-end;margin-left:20%;';
+  userMsg.textContent=txt;body.appendChild(userMsg);
+  setTimeout(()=>{
+    const rep=document.createElement('div');
+    rep.className='chat-msg';
+    const replies={
+      'Quiero empezar desde cero':'¡Perfecto! El Volcán Lanín es ideal para vos. No hace falta experiencia previa — solo disposición real. ¿Querés que te enviemos el detalle del programa?',
+      '¿Qué montaña es para mí?':'Depende de tu punto de partida. Podemos hacer una evaluación inicial gratuita para orientarte mejor. ¿Te enviamos el formulario?',
+      'Quiero información de precios':'El Lanín parte desde $2.800 USD con plan de pago disponible. El Aconcagua y Fitz Roy requieren consulta personalizada. ¿Te armamos una propuesta?'
+    };
+    rep.textContent=replies[txt]||'¡Gracias! En breve nos comunicamos con vos.';
+    body.appendChild(rep);
+    body.scrollTop=body.scrollHeight;
+  },800);
+}
+
+/* modals */
+function openMod(id){document.getElementById(id).classList.add('open');}
+function closeMod(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-bg').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
+
+/* course tabs */
+function stab(btn,id){
+  document.querySelectorAll('.ctab').forEach(b=>b.classList.remove('a'));
+  document.querySelectorAll('.cpanel').forEach(p=>p.classList.remove('a'));
+  btn.classList.add('a');document.getElementById(id).classList.add('a');
+}
+
+/* hotspots */
+function toggleHs(id){
+  const tip=document.getElementById(id);
+  const wasOpen=tip.classList.contains('show');
+  document.querySelectorAll('.hs-tip').forEach(t=>t.classList.remove('show'));
+  if(!wasOpen)tip.classList.add('show');
+}
+function closeHs(id){document.getElementById(id).classList.remove('show');}
+
+/* faq */
+function tFaq(btn){
+  const body=btn.nextElementSibling;const isO=btn.classList.contains('op');
+  document.querySelectorAll('.faq-q').forEach(b=>b.classList.remove('op'));
+  document.querySelectorAll('.faq-a').forEach(a=>a.classList.remove('op'));
+  if(!isO){btn.classList.add('op');body.classList.add('op');}
+}
+
+/* timeline */
+const prep=document.getElementById('preparacion'),sf=document.getElementById('psf');
+if(prep&&sf){
+  new IntersectionObserver(e=>{e.forEach(x=>{if(!x.isIntersecting)return;sf.style.height='100%';document.querySelectorAll('.ps').forEach((s,i)=>setTimeout(()=>s.classList.add('on'),i*320+200));});},{threshold:.15}).observe(prep);
+}
+
+/* email submit */
+function submitEmail(){
+  const v=document.getElementById('cf-email').value;
+  if(!v||!v.includes('@')){alert('Ingresá un email válido');return;}
+  alert('¡Gracias! Te contactamos en menos de 24 hs.');
+  document.getElementById('cf-email').value='';
+}
+function submitFooterEmail(){
+  const v=document.getElementById('femail').value;
+  if(!v||!v.includes('@')){alert('Ingresá un email válido');return;}
+  alert('¡Genial! Te contactamos pronto.');
+  document.getElementById('femail').value='';
+}
+
+/* ══ COURSE DETAIL PAGES ══ */
+const COURSES={
+  fitzroy:{name:'Expedición Fitz Roy',tag:'Programa élite',img:'https://images.unsplash.com/photo-1452573992436-6d508f200b30?w=1400&q=85',alt:'3.405 msnm',loc:'Patagonia Argentina',dur:'6 meses de preparación + 12 días de expedición',ratio:'1 guía : 3 expedicionistas',price:'Consultar (cupos muy limitados)',spots:'⚠ 4 cupos disponibles',desc:'El Fitz Roy es el icono de la Patagonia. Una montaña de granito vertical, meteorología impredecible y exigencia técnica extrema. Solo para quienes completaron el proceso integral de Cúspides. No es el punto de partida — es la consecuencia de años de trabajo honesto.',includes:['Proceso de preparación de 6 meses','12 sesiones en nieve real antes de la expedición','12 días en Patagonia con guías UIAGM','Logística de campo completa','Meteorología confirmada por 3 fuentes','Seguro de rescate de alta montaña','Kit técnico completo incluido'],reqs:['Haber completado al menos un programa previo de Cúspides','VO₂ máx ≥ 55 ml/kg/min','Historial demostrable de actividad en montaña','Evaluación psicológica aprobada']},
+  lanin:{name:'Volcán Lanín',tag:'Nivel inicio',img:'https://images.unsplash.com/photo-1551632811-561732d1e306?w=1400&q=85',alt:'3.776 msnm',loc:'Neuquén, Argentina',dur:'4 meses de preparación + 4 días de expedición',ratio:'1 guía : 3 expedicionistas',price:'Desde $2.800 USD (plan de pago disponible)',spots:'⚠ 8 cupos disponibles',desc:'El Lanín es la puerta de entrada al glaciarismo en la Patagonia. Un volcán bello y exigente, con nieve real y técnica de alta montaña. El primer desafío de la escuela — y donde entendés de qué estás hecho.',includes:['4 meses de preparación integral','8 sesiones técnicas en nieve real','4 días de expedición en el Lanín','Guías UIAGM certificados','Logística completa desde Bariloche','Plan nutricional incluido'],reqs:['Sin experiencia previa requerida','5 días de entrenamiento por semana','Compromiso con el plan nutricional','Evaluación inicial aprobada']},
+  aconcagua:{name:'Aconcagua',tag:'Nivel avanzado',img:'https://images.unsplash.com/photo-1519904981063-b0cf448d479e?w=1400&q=85',alt:'6.962 msnm',loc:'Mendoza, Argentina',dur:'9 meses de preparación + 21 días de expedición',ratio:'1 guía : 2 expedicionistas',price:'Consultar precio',spots:'⚠ 6 cupos disponibles',desc:'El techo de América. El Aconcagua no es una montaña técnica en sentido estricto — pero a casi 7.000 metros, la altitud convierte todo en extremo. Para llegar acá vas a necesitar años de preparación real.',includes:['9 meses de preparación integral','12+ sesiones técnicas en nieve','21 días de expedición','Ratio exclusivo 1:2','Médico de expedición incluido','Aclimatación progresiva planificada'],reqs:['Historial documentado de alta montaña','Cumbres previas de ≥ 5.000 msnm','VO₂ máx ≥ 60 ml/kg/min','Mínimo 2 temporadas con Cúspides']},
+  nutricion:{name:'Nutrición Alpina',tag:'Curso de apoyo',img:'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=1400&q=85',alt:'Alto rendimiento',loc:'Online + presencial (Bariloche)',dur:'8 semanas',ratio:'Máx. 12 participantes',price:'$380 USD',spots:'Próxima edición: Marzo 2025',desc:'La diferencia entre llegar con reservas o ceder a 200 metros de la cumbre está en lo que pusiste en el cuerpo durante meses. Este curso te enseña a comer para la montaña.',includes:['Plan nutricional personalizado','4 sesiones presenciales en Bariloche','Protocolo específico +4.000 msnm','Seguimiento semanal con nutricionista'],reqs:['Ser participante activo de un programa Cúspides o tener plan propio de alta montaña']},
+  mental:{name:'Fortaleza Mental',tag:'Curso de apoyo',img:'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=1400&q=85',alt:'Psicología de alto rendimiento',loc:'Presencial · Bariloche',dur:'3 semanas intensivas',ratio:'Máx. 8 participantes',price:'$550 USD',spots:'Próxima edición: Febrero 2025',desc:'A 5.000 metros el cuerpo terminó de hablar. Lo que sigue es una conversación entre vos y tu mente. Este intensivo te da las herramientas para ganarla — o al menos para no perderla.',includes:['21 días con psicólogo de alto rendimiento','Simulaciones bajo presión','Gestión del miedo e incertidumbre','Toma de decisiones en condiciones límite'],reqs:['Ser participante de algún programa de Cúspides','Disponibilidad completa durante 3 semanas']}
+};
+
+function openCourse(id){
+  const c=COURSES[id];if(!c)return;
+  const w=window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html lang="es"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>${c.name} — CÚSPIDES</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700;900&family=DM+Sans:wght@300;400;500&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--v:#12002A;--v2:#1A0038;--card:#221040;--vio:#6B21FF;--vp:#C9AAFF;--y:#D4FF00;--n:#EDE8DF;--n2:#8A8079;--red:#FF3366;}
+body{background:var(--v);color:var(--n);font-family:'DM Sans',sans-serif;font-weight:300;}
+.tb{background:rgba(18,0,42,.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(107,33,255,.2);padding:1rem 3rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.tbl{font-family:'Oswald',sans-serif;font-weight:900;font-size:1.05rem;display:flex;align-items:center;gap:.4rem;}
+.tbt{width:16px;height:16px;background:var(--vio);clip-path:polygon(50% 0%,100% 100%,0% 100%);}
+.tbb{font-family:'Fira Code',monospace;font-size:.56rem;letter-spacing:.18em;text-transform:uppercase;color:var(--vp);background:none;border:none;cursor:pointer;transition:color .2s;}
+.tbb:hover{color:var(--y);}
+.hero{position:relative;min-height:58vh;display:flex;align-items:flex-end;overflow:hidden;}
+.hbi{position:absolute;inset:0;background:url('${c.img}') center/cover no-repeat;filter:brightness(.28) saturate(.55);}
+.hbi::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,var(--v) 0%,rgba(18,0,42,.5) 50%,transparent 100%);}
+.hc{position:relative;z-index:1;padding:3rem;}
+.htg{font-family:'Fira Code',monospace;font-size:.52rem;letter-spacing:.22em;text-transform:uppercase;padding:.2rem .6rem;display:inline-block;margin-bottom:1rem;background:rgba(107,33,255,.22);color:var(--vp);}
+.hh{font-family:'Oswald',sans-serif;font-weight:900;font-size:clamp(2.5rem,7vw,7rem);line-height:.87;letter-spacing:-.04em;color:var(--n);margin-bottom:1.5rem;}
+.hm{display:flex;flex-wrap:wrap;gap:1.5rem;}
+.hmi{font-family:'Fira Code',monospace;font-size:.56rem;letter-spacing:.12em;color:var(--n2);display:flex;flex-direction:column;gap:.15rem;}
+.hmi strong{color:var(--y);font-size:.82rem;font-family:'Oswald',sans-serif;font-weight:700;}
+.body{padding:5rem 3rem;max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1.4fr 1fr;gap:5rem;align-items:start;}
+.desc{font-size:1rem;line-height:1.9;color:var(--n2);margin-bottom:2.5rem;}
+.desc b{color:var(--n);font-weight:500;}
+.slbl{font-family:'Fira Code',monospace;font-size:.52rem;letter-spacing:.25em;text-transform:uppercase;color:var(--vp);margin-bottom:1.2rem;display:flex;align-items:center;gap:.7rem;}
+.slbl::after{content:'';flex:1;height:1px;background:rgba(107,33,255,.2);}
+.ilist{list-style:none;display:flex;flex-direction:column;gap:.75rem;margin-bottom:2.5rem;}
+.ilist li{display:flex;align-items:flex-start;gap:.75rem;font-size:.85rem;line-height:1.6;color:var(--n2);}
+.ilist li::before{content:'▲';color:var(--y);font-size:.48rem;margin-top:.28rem;flex-shrink:0;}
+.sidebar{position:sticky;top:5rem;}
+.pcard{background:var(--card);border:1px solid rgba(107,33,255,.22);padding:2.5rem;margin-bottom:3px;}
+.plbl{font-family:'Fira Code',monospace;font-size:.5rem;letter-spacing:.22em;text-transform:uppercase;color:var(--vp);margin-bottom:.4rem;}
+.pval{font-family:'Oswald',sans-serif;font-weight:900;font-size:1.5rem;color:var(--y);line-height:1;margin-bottom:1.3rem;}
+.spill{display:inline-flex;align-items:center;gap:.4rem;font-family:'Fira Code',monospace;font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;color:var(--red);padding:.25rem .6rem;background:rgba(255,51,102,.1);border:1px solid rgba(255,51,102,.22);margin-bottom:1.2rem;}
+.sbl{width:6px;height:6px;border-radius:50%;background:var(--red);animation:bl 1.8s ease-in-out infinite;}
+@keyframes bl{0%,100%{opacity:1;}50%{opacity:.15;}}
+.dr{display:flex;justify-content:space-between;align-items:center;padding:.65rem 0;border-bottom:1px solid rgba(107,33,255,.08);font-size:.8rem;}
+.dr:last-of-type{border:none;}
+.dk{color:var(--n2);}.dv{color:var(--n);font-weight:500;text-align:right;max-width:58%;}
+.bc{font-family:'Oswald',sans-serif;font-weight:700;font-size:.68rem;letter-spacing:.07em;text-transform:uppercase;padding:.82rem 1.8rem;background:var(--y);color:var(--v);border:none;cursor:pointer;width:100%;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));transition:transform .2s;margin-bottom:.5rem;}
+.bc:hover{transform:translateY(-2px);}
+.bg{font-family:'Oswald',sans-serif;font-weight:700;font-size:.68rem;letter-spacing:.07em;text-transform:uppercase;padding:.78rem 1.8rem;background:transparent;color:var(--n);border:1px solid rgba(107,33,255,.4);cursor:pointer;width:100%;transition:border-color .2s,color .2s;}
+.bg:hover{border-color:var(--y);color:var(--y);}
+.rq{background:rgba(107,33,255,.08);border-left:2px solid var(--vio);padding:1.4rem 1.8rem;}
+.ri{font-size:.82rem;line-height:1.6;color:var(--n2);padding:.4rem 0;border-bottom:1px solid rgba(107,33,255,.07);}
+.ri:last-child{border:none;}
+.disc{font-family:'Fira Code',monospace;font-size:.48rem;letter-spacing:.1em;color:var(--n2);text-align:center;margin-top:.9rem;line-height:1.5;}
+footer{background:var(--v2);border-top:1px solid rgba(107,33,255,.15);padding:2rem 3rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+.fl{font-family:'Oswald',sans-serif;font-weight:900;font-size:1rem;display:flex;align-items:center;gap:.4rem;}
+.ft{width:14px;height:14px;background:var(--vio);clip-path:polygon(50% 0%,100% 100%,0% 100%);}
+.fc{font-family:'Fira Code',monospace;font-size:.5rem;letter-spacing:.1em;color:var(--n2);}
+@media(max-width:768px){.body{grid-template-columns:1fr;padding:3rem 1.5rem;}.tb{padding:1rem 1.5rem;}.hc{padding:2rem 1.5rem;}.sidebar{position:static;}footer{padding:2rem 1.5rem;flex-direction:column;align-items:flex-start;}}
+</style></head><body>
+<div class="tb"><div class="tbl"><span class="tbt"></span>CÚSPIDES</div><button class="tbb" onclick="window.close()">← Volver a cursos</button></div>
+<div class="hero"><div class="hbi"></div><div class="hc"><span class="htg">${c.tag}</span><h1 class="hh">${c.name.toUpperCase()}</h1><div class="hm"><div class="hmi"><strong>${c.alt}</strong><span>Altitud</span></div><div class="hmi"><strong>${c.loc}</strong><span>Ubicación</span></div><div class="hmi"><strong>${c.dur.split('+')[0].trim()}</strong><span>Preparación</span></div><div class="hmi"><strong>${c.ratio}</strong><span>Ratio</span></div></div></div></div>
+<div class="body">
+<div><p class="desc">${c.desc}</p><p class="slbl">Qué incluye</p><ul class="ilist">${c.includes.map(i=>`<li>${i}</li>`).join('')}</ul><p class="slbl">Requisitos</p><div class="rq">${c.reqs.map(r=>`<p class="ri">${r}</p>`).join('')}</div></div>
+<div class="sidebar"><div class="pcard"><p class="plbl">Inversión</p><p class="pval">${c.price}</p><div class="spill"><span class="sbl"></span>${c.spots}</div><div class="dr"><span class="dk">Duración</span><span class="dv">${c.dur}</span></div><div class="dr"><span class="dk">Ratio</span><span class="dv">${c.ratio}</span></div><div class="dr"><span class="dk">Próximo inicio</span><span class="dv">Marzo 2025</span></div></div><div class="pcard"><button class="bc" onclick="window.open('mailto:info@cuspides.com.ar?subject=Postulación ${c.name}')">Postulate</button><button class="bg" onclick="window.open('mailto:info@cuspides.com.ar?subject=Consulta ${c.name}')">Consultar precio</button><p class="disc">Respondemos en menos de 48 hs.<br/>No vendemos cupos — evaluamos personas.</p></div></div>
+</div>
+<footer><div class="fl"><span class="ft"></span>CÚSPIDES</div><p class="fc">© 2025 Cúspides · Bariloche, Patagonia</p></footer>
+</body></html>`);
+  w.document.close();
+}
+</script>
+</body>
+</html>
